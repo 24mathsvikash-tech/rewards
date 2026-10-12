@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OM Public School - Student Merit Portal</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #0284c7;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            height: 55px;
+            position: absolute;
+            left: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .controls label {
+            font-weight: bold;
+        }
+
+        .controls select, .controls input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .controls input[type="text"] {
+            flex-grow: 1;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 1200px;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid #f1f5f9;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+        }
+
+        td.student-name {
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .house-tag {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 11px;
+            color: white;
+        }
+
+        .house-blue { background-color: #2563eb; }
+        .house-green { background-color: #16a34a; }
+        .house-red { background-color: #dc2626; }
+        .house-yellow { background-color: #ca8a04; }
+
+        .total-cell {
+            font-weight: bold;
+            color: var(--primary);
+            background-color: #eff6ff;
+            font-size: 14px;
+        }
+
+        @media print {
+            .controls { display: none; }
+            body { padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logo.png" alt="School Logo" class="logo" onerror="this.src='./logo.png'">
+        <div>
+            <h1>OM PUBLIC SCHOOL</h1>
+            <p>Student Merit & Discipline Ledger (Public View)</p>
+        </div>
+    </header>
+
+    <!-- Search & Filter Controls -->
+    <div class="controls">
+        <label for="classFilter">Class:</label>
+        <select id="classFilter" onchange="filterData()">
+            <option value="ALL">-- All Classes --</option>
+            <option value="I">Class I</option>
+            <option value="II">Class II</option>
+            <option value="III">Class III</option>
+            <option value="IV">Class IV</option>
+            <option value="V">Class V</option>
+            <option value="VI">Class VI</option>
+            <option value="VII">Class VII</option>
+            <option value="VIII">Class VIII</option>
+            <option value="IX">Class IX</option>
+            <option value="X">Class X</option>
+        </select>
+
+        <label for="houseFilter">House:</label>
+        <select id="houseFilter" onchange="filterData()">
+            <option value="ALL">-- All Houses --</option>
+            <option value="Blue">Blue House</option>
+            <option value="Green">Green House</option>
+            <option value="Red">Red House</option>
+            <option value="Yellow">Yellow House</option>
+        </select>
+
+        <label for="searchInput">Find Student Name:</label>
+        <input type="text" id="searchInput" placeholder="Type student name to search..." onkeyup="filterData()">
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Sr.</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>House</th>
+                    <th>Discipline</th>
+                    <th>Uniform</th>
+                    <th>Hindi</th>
+                    <th>English</th>
+                    <th>Marathi</th>
+                    <th>Maths</th>
+                    <th>Science</th>
+                    <th>GK</th>
+                    <th>ICT</th>
+                    <th>Library</th>
+                    <th>Robotics</th>
+                    <th>SS</th>
+                    <th>Total Points</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Loaded dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Roster data
+        const defaultStudents = [
+            { name: "AARAV KAMLESH GAUD", std: "I", house: "Blue" },
+            { name: "ANVIT NILESH RANE", std: "I", house: "Blue" },
+            { name: "AASHWI JAGDISH PATIL", std: "I", house: "Green" },
+            { name: "ANUJ SACHIN KURHADKAR", std: "I", house: "Red" },
+            { name: "AAI KUMARI", std: "I", house: "Yellow" }
+        ];
+
+        let students = [];
+        let scores = {};
+
+        function loadData() {
+            const savedStudents = localStorage.getItem('om_school_students');
+            const savedScores = localStorage.getItem('om_school_scores');
+            
+            students = savedStudents ? JSON.parse(savedStudents) : defaultStudents;
+            scores = savedScores ? JSON.parse(savedScores) : {};
+        }
+
+        function renderTable(filterClass = "ALL", filterHouse = "ALL", searchQuery = "") {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            let srNo = 1;
+
+            students.forEach((student, index) => {
+                if (filterClass !== "ALL" && student.std !== filterClass) return;
+                if (filterHouse !== "ALL" && student.house !== filterHouse) return;
+                if (searchQuery && !student.name.toLowerCase().includes(searchQuery.toLowerCase())) return;
+
+                const s = scores[index] || {
+                    disc: 0, unif: 0, hin: 0, eng: 0, mar: 0,
+                    math: 0, sci: 0, gk: 0, ict: 0, lib: 0, rob: 0, ss: 0
+                };
+
+                const total = s.disc + s.unif + s.hin + s.eng + s.mar + s.math + s.sci + s.gk + s.ict + s.lib + s.rob + s.ss;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${srNo++}</td>
+                    <td class="student-name">${student.name}</td>
+                    <td>Class ${student.std}</td>
+                    <td><span class="house-tag house-${student.house.toLowerCase()}">${student.house}</span></td>
+                    <td>${s.disc}</td>
+                    <td>${s.unif}</td>
+                    <td>${s.hin}</td>
+                    <td>${s.eng}</td>
+                    <td>${s.mar}</td>
+                    <td>${s.math}</td>
+                    <td>${s.sci}</td>
+                    <td>${s.gk}</td>
+                    <td>${s.ict}</td>
+                    <td>${s.lib}</td>
+                    <td>${s.rob}</td>
+                    <td>${s.ss}</td>
+                    <td class="total-cell">${total}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterData() {
+            const classVal = document.getElementById('classFilter').value;
+            const houseVal = document.getElementById('houseFilter').value;
+            const searchVal = document.getElementById('searchInput').value;
+            renderTable(classVal, houseVal, searchVal);
+        }
+
+        window.onload = function() {
+            loadData();
+            renderTable();
+        };
+    </script>
+</body>
+</html>
