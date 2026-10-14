@@ -360,7 +360,6 @@
                     <th>Library</th>
                     <th>Robotics</th>
                     <th>SS</th>
-                    <th>KB</th>
                     <th>Total Points</th>
                 </tr>
             </thead>
@@ -1052,9 +1051,12 @@
                 const s = scores[index];
                 const total = s.disc + s.unif + s.hin + s.eng + s.mar + s.math + s.sci + s.gk + s.ict + s.lib + s.rob + s.ss;
                 document.getElementById(`total-${index}`).innerText = total;
+
+                // Automatically save to localStorage instantly without needing an alert
+                localStorage.setItem('om_school_students', JSON.stringify(students));
+                localStorage.setItem('om_school_scores', JSON.stringify(scores));
             }
         }
-
         function filterData() {
             const classVal = document.getElementById('classFilter').value;
             const houseVal = document.getElementById('houseFilter').value;
