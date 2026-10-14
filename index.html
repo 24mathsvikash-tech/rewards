@@ -337,7 +337,7 @@
         <label for="searchInput">Search Name:</label>
         <input type="text" id="searchInput" placeholder="Type student name..." onkeyup="filterData()">
 
-        <button type="button" class="btn" onclick="saveData()">Save Progress</button>
+        <button type="button" class="btn" onclick="saveData()">Sync to Google Sheets</button>
     </div>
 
     <div class="table-container">
@@ -370,6 +370,9 @@
     </div>
 
     <script>
+        // Replace with your Google Apps Script Web App URL
+        const API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+
         // Faculty DB mapping usernames to allowed fields. Empty array [] means Admin (full access to all fields & adding students).
         const teachersDB = {
             "vijeta": { pass: "vijeta123", name: "Vijeta Sinha (Principal)", allowed: [] },
@@ -892,8 +895,6 @@
                 }
 
                 loadData();
-                populateStudentDropdown();
-                filterData();
             } else {
                 errorDiv.innerText = "Invalid Username or Password!";
             }
@@ -909,22 +910,26 @@
             document.getElementById('addStudentPanel').classList.add('hidden');
         }
 
-        function loadData() {
-            const savedStudents = localStorage.getItem('om_school_students');
-            const savedScores = localStorage.getItem('om_school_scores');
-            
-            if (savedStudents) {
-                students = JSON.parse(savedStudents);
-            } else {
+        async function loadData() {
+            try {
+                const response = await fetch(`${API_URL}?action=getData`);
+                const result = await response.json();
+                
+                scores = result.scores && Object.keys(result.scores).length > 0 ? result.scores : {};
+                students = result.students && result.students.length > 0 ? result.students : [...defaultStudents];
+                
+                populateStudentDropdown();
+                filterData();
+            } catch (error) {
+                console.error("Error loading data from Google Sheets:", error);
                 students = [...defaultStudents];
-            }
-
-            if (savedScores) {
-                scores = JSON.parse(savedScores);
+                scores = {};
+                populateStudentDropdown();
+                filterData();
             }
         }
 
-        function addStudent() {
+        async function addStudent() {
             if (currentTeacher && currentTeacher.allowed.length > 0) {
                 alert('Access Denied: Only administrators can add new students.');
                 return;
@@ -940,12 +945,18 @@
                 return;
             }
 
-            students.push({ name, std, house });
+            const newStudent = { name, std, house };
+            students.push(newStudent);
             nameInput.value = '';
             
-            saveData();
+            await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "addStudent", student: newStudent })
+            });
+
             populateStudentDropdown();
             filterData();
+            alert('New student added and synced to Google Sheets!');
         }
 
         function populateStudentDropdown() {
@@ -1034,7 +1045,7 @@
             }
         }
 
-        function updatePoint(index, field, change) {
+        async function updatePoint(index, field, change) {
             if (currentTeacher && currentTeacher.allowed.length > 0 && !currentTeacher.allowed.includes(field)) {
                 alert("Permission Denied: You cannot modify columns assigned to other teachers.");
                 return;
@@ -1052,11 +1063,14 @@
                 const total = s.disc + s.unif + s.hin + s.eng + s.mar + s.math + s.sci + s.gk + s.ict + s.lib + s.rob + s.ss;
                 document.getElementById(`total-${index}`).innerText = total;
 
-                // Automatically save to localStorage instantly without needing an alert
-                localStorage.setItem('om_school_students', JSON.stringify(students));
-                localStorage.setItem('om_school_scores', JSON.stringify(scores));
+                // Automatically save instantly to Google Sheets in the background
+                await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "saveScores", scores: scores })
+                });
             }
         }
+
         function filterData() {
             const classVal = document.getElementById('classFilter').value;
             const houseVal = document.getElementById('houseFilter').value;
@@ -1065,10 +1079,12 @@
             renderTable(classVal, houseVal, searchVal, studentVal);
         }
 
-        function saveData() {
-            localStorage.setItem('om_school_students', JSON.stringify(students));
-            localStorage.setItem('om_school_scores', JSON.stringify(scores));
-            alert('Progress saved successfully!');
+        async function saveData() {
+            await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "saveScores", scores: scores })
+            });
+            alert('Progress successfully synced to Google Sheets!');
         }
     </script>
 </body>   
