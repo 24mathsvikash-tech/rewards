@@ -274,7 +274,7 @@
     </div>
 
     <script>
-        // Replace with your Google Apps Script Web App URL
+        // Replace with your Google Apps Script Web App URL if using online sync
         const API_URL = "https://script.google.com/macros/s/AKfycbwDqQYpRMWcgOaSQYPUBEQ9oCXMKrZAFrTApCSKdV88HUKq_UewBlgmEIRoazIDm4GvUQ/exec";
 
         // Complete student roster data
@@ -750,21 +750,29 @@
 
         async function loadData() {
             try {
+                // 1. Try loading live points from Google Sheets
                 const response = await fetch(`${API_URL}?action=getData`);
                 const result = await response.json();
                 
-                scores = result.scores || {};
+                if (result && result.scores && Object.keys(result.scores).length > 0) {
+                    scores = result.scores;
+                } else {
+                    throw new Error("No scores from API, falling back to local storage.");
+                }
                 students = result.students && result.students.length > 0 ? result.students : [...defaultStudents];
-                
-                renderLeaderboard();
-                renderTable();
             } catch (error) {
-                console.error("Error loading live data from Google Sheets:", error);
-                students = [...defaultStudents];
-                scores = {};
-                renderLeaderboard();
-                renderTable();
+                console.warn("Using local storage fallback:", error);
+                
+                // 2. Check both local storage keys (om_scores and om_school_scores)
+                const savedScores = localStorage.getItem('om_scores') || localStorage.getItem('om_school_scores');
+                const savedStudents = localStorage.getItem('om_students') || localStorage.getItem('om_school_students');
+                
+                scores = savedScores ? JSON.parse(savedScores) : {};
+                students = savedStudents ? JSON.parse(savedStudents) : [...defaultStudents];
             }
+            
+            renderLeaderboard();
+            renderTable();
         }
 
         function calculateTotal(index) {
@@ -772,9 +780,12 @@
                 disc: 0, unif: 0, hin: 0, eng: 0, mar: 0,
                 math: 0, sci: 0, gk: 0, ict: 0, lib: 0, rob: 0, ss: 0
             };
-            return (s.disc || 0) + (s.unif || 0) + (s.hin || 0) + (s.eng || 0) + 
-                   (s.mar || 0) + (s.math || 0) + (s.sci || 0) + (s.gk || 0) + 
-                   (s.ict || 0) + (s.lib || 0) + (s.rob || 0) + (s.ss || 0);
+            
+            // Convert to Numbers in case values were saved as strings
+            return (Number(s.disc) || 0) + (Number(s.unif) || 0) + (Number(s.hin) || 0) + 
+                   (Number(s.eng) || 0) + (Number(s.mar) || 0) + (Number(s.math) || 0) + 
+                   (Number(s.sci) || 0) + (Number(s.gk) || 0) + (Number(s.ict) || 0) + 
+                   (Number(s.lib) || 0) + (Number(s.rob) || 0) + (Number(s.ss) || 0);
         }
 
         function renderLeaderboard() {
@@ -840,18 +851,18 @@
                     <td class="student-name">${student.name}</td>
                     <td>Class ${student.std}</td>
                     <td><span class="house-tag house-${student.house.toLowerCase()}">${student.house}</span></td>
-                    <td>${s.disc || 0}</td>
-                    <td>${s.unif || 0}</td>
-                    <td>${s.hin || 0}</td>
-                    <td>${s.eng || 0}</td>
-                    <td>${s.mar || 0}</td>
-                    <td>${s.math || 0}</td>
-                    <td>${s.sci || 0}</td>
-                    <td>${s.gk || 0}</td>
-                    <td>${s.ict || 0}</td>
-                    <td>${s.lib || 0}</td>
-                    <td>${s.rob || 0}</td>
-                    <td>${s.ss || 0}</td>
+                    <td>${Number(s.disc) || 0}</td>
+                    <td>${Number(s.unif) || 0}</td>
+                    <td>${Number(s.hin) || 0}</td>
+                    <td>${Number(s.eng) || 0}</td>
+                    <td>${Number(s.mar) || 0}</td>
+                    <td>${Number(s.math) || 0}</td>
+                    <td>${Number(s.sci) || 0}</td>
+                    <td>${Number(s.gk) || 0}</td>
+                    <td>${Number(s.ict) || 0}</td>
+                    <td>${Number(s.lib) || 0}</td>
+                    <td>${Number(s.rob) || 0}</td>
+                    <td>${Number(s.ss) || 0}</td>
                     <td class="total-cell">${total}</td>
                 `;
                 tbody.appendChild(tr);
@@ -870,4 +881,4 @@
         };
     </script>
 </body>
-</html>
+</html>a
