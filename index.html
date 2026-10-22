@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OM Public School - Merit & Discipline Ledger</title>
+    <title>OM Public School - Student Merit Portal & Leaderboard</title>
     <style>
         :root {
             --primary: #1e3a8a;
@@ -31,6 +31,15 @@
             margin-bottom: 20px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            height: 55px;
+            position: absolute;
+            left: 20px;
         }
 
         header h1 {
@@ -44,78 +53,60 @@
             font-size: 14px;
         }
 
-        .logout-btn {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .logout-btn:hover {
-            background: #dc2626;
-        }
-
-        /* Login Overlay */
-        #loginOverlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .login-card {
+        /* Leaderboard Section */
+        .leaderboard-section {
             background: white;
-            padding: 30px;
+            padding: 20px;
             border-radius: 8px;
-            width: 380px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            max-height: 90vh;
-            overflow-y: auto;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .login-card h2 {
+        .leaderboard-section h2 {
             margin-top: 0;
             color: var(--primary);
+            font-size: 18px;
             text-align: center;
-        }
-
-        .form-group {
             margin-bottom: 15px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 14px;
+        .leaderboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
 
-        .form-group input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        .error-msg {
-            color: #ef4444;
-            font-size: 12px;
-            margin-top: 5px;
+        .leader-card {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 6px;
+            padding: 12px;
             text-align: center;
         }
 
-        .controls, .add-student-panel {
+        .leader-card h3 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            color: #b45309;
+        }
+
+        .leader-card .leader-name {
+            font-weight: bold;
+            font-size: 13px;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+
+        .leader-card .leader-points {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .controls {
             display: flex;
             gap: 15px;
             margin-bottom: 20px;
@@ -127,11 +118,12 @@
             border: 1px solid var(--border);
         }
 
-        .controls label, .add-student-panel label {
+        .controls label {
             font-weight: bold;
+            font-size: 14px;
         }
 
-        .controls select, .controls input, .add-student-panel select, .add-student-panel input {
+        .controls select, .controls input {
             padding: 8px 12px;
             border: 1px solid var(--border);
             border-radius: 4px;
@@ -140,28 +132,6 @@
 
         .controls input[type="text"] {
             flex-grow: 1;
-        }
-
-        .btn {
-            background-color: var(--secondary);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .btn:hover {
-            background-color: #0369a1;
-        }
-
-        .btn-add {
-            background-color: #16a34a;
-        }
-
-        .btn-add:hover {
-            background-color: #15803d;
         }
 
         .table-container {
@@ -175,12 +145,12 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
-            min-width: 1300px;
+            font-size: 13px;
+            min-width: 1200px;
         }
 
         th, td {
-            padding: 8px 10px;
+            padding: 10px 12px;
             text-align: center;
             border-bottom: 1px solid var(--border);
             border-right: 1px solid #f1f5f9;
@@ -200,113 +170,54 @@
             white-space: nowrap;
         }
 
-        .point-btn {
-            background: #e2e8f0;
-            border: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 3px;
-            cursor: pointer;
+        .house-tag {
+            padding: 3px 8px;
+            border-radius: 12px;
             font-weight: bold;
-            line-height: 1;
-            margin: 0 2px;
+            font-size: 11px;
+            color: white;
         }
 
-        .point-btn:hover {
-            background: #cbd5e1;
-        }
-
-        .point-btn.disabled {
-            background: #f1f5f9;
-            color: #cbd5e1;
-            cursor: not-allowed;
-        }
+        .house-blue { background-color: #2563eb; }
+        .house-green { background-color: #16a34a; }
+        .house-red { background-color: #dc2626; }
+        .house-yellow { background-color: #ca8a04; }
 
         .total-cell {
             font-weight: bold;
             color: var(--primary);
             background-color: #eff6ff;
-        }
-
-        .hidden {
-            display: none !important;
+            font-size: 14px;
         }
 
         @media print {
-            .controls, .add-student-panel, .point-btn, #loginOverlay {
-                display: none;
-            }
-            body {
-                padding: 0;
-            }
+            .controls, .leaderboard-section { display: none; }
+            body { padding: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Login Modal -->
-    <div id="loginOverlay">
-        <div class="login-card">
-            <h2>Faculty Login</h2>
-            <form onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label for="teacherId">Username:</label>
-                    <input type="text" id="teacherId" required placeholder="e.g. vikash, pankaj">
-                </div>
-                <div class="form-group">
-                    <label for="teacherPass">Password:</label>
-                    <input type="password" id="teacherPass" required placeholder="Enter password">
-                </div>
-                <div id="loginError" class="error-msg"></div>
-                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Login</button>
-            </form>
-            <p style="font-size: 11px; color: #64748b; margin-top: 15px; text-align: center;">
-                Default Password for all faculty: <b>pass123</b><br>
-                Admin (Vikash Yadav): <b>vikash</b> (Pass: <b>vikash123</b>)
-            </p>
+    <header>
+        <img src="logo.png" alt="School Logo" class="logo" onerror="this.src='./logo.png'">
+        <div>
+            <h1>OM PUBLIC SCHOOL</h1>
+            <p>Student Merit & Discipline Ledger (Public Home View)</p>
+        </div>
+    </header>
+
+    <!-- Class-wise Leaderboard Section -->
+    <div class="leaderboard-section">
+        <h2>🏆 Class-wise Leaders (Top Scorers)</h2>
+        <div id="leaderboardGrid" class="leaderboard-grid">
+            <!-- Populated dynamically -->
         </div>
     </div>
-<header>
-   <img src="./logo.png" alt="School Logo" class="logo">
-    <div>
-        <h1>OM PUBLIC SCHOOL</h1>
-        <p id="headerSubtitle">Merit & Discipline Points Ledger (Max 5 Marks per Category)</p>
-    </div>
-    <button id="logoutBtn" class="logout-btn hidden" onclick="handleLogout()">Logout</button>
-</header>
 
-    <!-- Panel to add new students dynamically (Admin only) -->
-    <div id="addStudentPanel" class="add-student-panel hidden">
-        <label>Add New Student:</label>
-        <input type="text" id="newStudentName" placeholder="Full Student Name">
-        
-        <select id="newStudentClass">
-            <option value="I">Class I</option>
-            <option value="II">Class II</option>
-            <option value="III">Class III</option>
-            <option value="IV">Class IV</option>
-            <option value="V">Class V</option>
-            <option value="VI">Class VI</option>
-            <option value="VII">Class VII</option>
-            <option value="VIII">Class VIII</option>
-            <option value="IX">Class IX</option>
-            <option value="X">Class X</option>
-        </select>
-
-        <select id="newStudentHouse">
-            <option value="Blue">Blue House</option>
-            <option value="Green">Green House</option>
-            <option value="Red">Red House</option>
-            <option value="Yellow">Yellow House</option>
-        </select>
-
-        <button type="button" class="btn btn-add" onclick="addStudent()">+ Add Student</button>
-    </div>
-
-    <!-- Controls for Filtering -->
+    <!-- Search & Filter Controls -->
     <div class="controls">
-        <label for="classFilter">Select Class:</label>
-        <select id="classFilter" onchange="populateStudentDropdown(); filterData();">
+        <label for="classFilter">Class:</label>
+        <select id="classFilter" onchange="filterData()">
             <option value="ALL">-- All Classes --</option>
             <option value="I">Class I</option>
             <option value="II">Class II</option>
@@ -320,36 +231,29 @@
             <option value="X">Class X</option>
         </select>
 
-        <label for="houseFilter">Select House:</label>
-        <select id="houseFilter" onchange="populateStudentDropdown(); filterData();">
+        <label for="houseFilter">House:</label>
+        <select id="houseFilter" onchange="filterData()">
             <option value="ALL">-- All Houses --</option>
-            <option value="Blue">Blue</option>
-            <option value="Green">Green</option>
-            <option value="Red">Red</option>
-            <option value="Yellow">Yellow</option>
+            <option value="Blue">Blue House</option>
+            <option value="Green">Green House</option>
+            <option value="Red">Red House</option>
+            <option value="Yellow">Yellow House</option>
         </select>
 
-        <label for="studentDropdown">Select Student:</label>
-        <select id="studentDropdown" onchange="filterData()">
-            <option value="">-- All Students --</option>
-        </select>
-
-        <label for="searchInput">Search Name:</label>
-        <input type="text" id="searchInput" placeholder="Type student name..." onkeyup="filterData()">
-
-        <button type="button" class="btn" onclick="saveData()">Sync to Google Sheets</button>
+        <label for="searchInput">Find Student Name:</label>
+        <input type="text" id="searchInput" placeholder="Type student name to search..." onkeyup="filterData()">
     </div>
 
     <div class="table-container">
-        <table id="ledgerTable">
+        <table>
             <thead>
                 <tr>
                     <th>Sr.</th>
                     <th>Student Name</th>
-                    <th>Std</th>
+                    <th>Class</th>
                     <th>House</th>
                     <th>Discipline</th>
-                    <th>Uniform (N/H)</th>
+                    <th>Uniform</th>
                     <th>Hindi</th>
                     <th>English</th>
                     <th>Marathi</th>
@@ -364,48 +268,15 @@
                 </tr>
             </thead>
             <tbody id="tableBody">
-                <!-- Data populated dynamically via JS -->
+                <!-- Loaded dynamically -->
             </tbody>
         </table>
     </div>
 
     <script>
         // Replace with your Google Apps Script Web App URL
-        const API_URL = "https://script.google.com/macros/s/AKfycbxBuRPuKJhT5Qf4iHoeLLKpqwyj3dDDKOjkUbthg7ofTbnnZVIXrZIzwZNm3w5oQzi2KA/exec";
+        const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL";
 
-        // Faculty DB mapping usernames to allowed fields. Empty array [] means Admin (full access to all fields & adding students).
-        const teachersDB = {
-            "vijeta": { pass: "vijeta123", name: "Vijeta Sinha (Principal)", allowed: [] },
-            "vikash": { pass: "vikash123", name: "Vikash Yadav (Admin)", allowed: [] },
-            "pankaj": { pass: "pass123", name: "Pankaj", allowed: ["hin"] },
-            "jayanti": { pass: "pass123", name: "Jayanti Dash", allowed: ["hin", "ss"] },
-            "parmila": { pass: "pass123", name: "Parmila Yadav", allowed: ["hin"] },
-            "khairunnisa": { pass: "pass123", name: "Khairunnisa Sayed", allowed: ["eng", "ss"] },
-            "santoshi": { pass: "pass123", name: "Santoshi Padhi", allowed: ["eng"] },
-            "sharvari": { pass: "pass123", name: "Sharvari Hirlekar", allowed: ["eng"] },
-            "roshani": { pass: "pass123", name: "Roshani Raut", allowed: ["math"] },
-            "binita": { pass: "pass123", name: "Binita Mohapatra", allowed: ["sci"] },
-            "indika": { pass: "pass123", name: "Indika Arnakal", allowed: ["sci"] },
-            "dhara": { pass: "pass123", name: "Dhara Vyas", allowed: ["sci", "math"] },
-            "vinay": { pass: "pass123", name: "Vinay Kumar Upadhyay", allowed: ["ss", "math"] },
-            "priyanka": { pass: "pass123", name: "Priyanka Redekar", allowed: ["ss"] },
-            "swati": { pass: "pass123", name: "Swati Khaire", allowed: ["mar"] },
-            "dinesh": { pass: "pass123", name: "Dinesh Lagad", allowed: ["disc", "unif"] },
-            "prasant": { pass: "pass123", name: "Prasant Kumar Pandey", allowed: ["disc", "unif"] },
-            "vinod": { pass: "pass123", name: "Vinod Tapase", allowed: ["disc", "unif"] },
-            "shruti": { pass: "pass123", name: "Shruti Saxena", allowed: ["ict"] },
-            "akshay": { pass: "pass123", name: "Akshay Kamble", allowed: ["rob", "gk"] },
-            "ashutosh": { pass: "pass123", name: "Ashutosh Thorat", allowed: ["lib", "gk"] },
-            "anagha": { pass: "pass123", name: "Anagha Samudra", allowed: ["gk"] },
-            "shalini": { pass: "pass123", name: "Shalini Pandey", allowed: ["disc"] },
-            "mamta": { pass: "pass123", name: "Mamta Yadav", allowed: ["gk"] },
-            "prerna": { pass: "pass123", name: "Prerna Poojari", allowed: ["gk"] },
-            "sulochana": { pass: "pass123", name: "Sulochana Nair", allowed: ["gk"] }
-        };
-
-        let currentTeacher = null;
-
-        // Pre-populated default roster extracted from school house sheets
         const defaultStudents = [
             // BLUE HOUSE
             { name: "AARAV KAMLESH GAUD", std: "I", house: "Blue" },
@@ -876,109 +747,80 @@
         let students = [];
         let scores = {};
 
-        function handleLogin(e) {
-            e.preventDefault();
-            const id = document.getElementById('teacherId').value.trim().toLowerCase();
-            const pass = document.getElementById('teacherPass').value.trim();
-            const errorDiv = document.getElementById('loginError');
-
-            if (teachersDB[id] && teachersDB[id].pass === pass) {
-                currentTeacher = { username: id, ...teachersDB[id] };
-                document.getElementById('loginOverlay').classList.add('hidden');
-                document.getElementById('logoutBtn').classList.remove('hidden');
-                
-                if (currentTeacher.allowed.length === 0) {
-                    document.getElementById('addStudentPanel').classList.remove('hidden');
-                    document.getElementById('headerSubtitle').innerText = `Logged in as: ${currentTeacher.name} (Full Admin Access)`;
-                } else {
-                    document.getElementById('headerSubtitle').innerText = `Logged in as: ${currentTeacher.name} (Authorized Categories)`;
-                }
-
-                loadData();
-            } else {
-                errorDiv.innerText = "Invalid Username or Password!";
-            }
-        }
-
-        function handleLogout() {
-            currentTeacher = null;
-            document.getElementById('teacherId').value = '';
-            document.getElementById('teacherPass').value = '';
-            document.getElementById('loginError').innerText = '';
-            document.getElementById('loginOverlay').classList.remove('hidden');
-            document.getElementById('logoutBtn').classList.add('hidden');
-            document.getElementById('addStudentPanel').classList.add('hidden');
-        }
-
         async function loadData() {
             try {
                 const response = await fetch(`${API_URL}?action=getData`);
                 const result = await response.json();
                 
-                scores = result.scores && Object.keys(result.scores).length > 0 ? result.scores : {};
-                students = result.students && result.students.length > 0 ? result.students : [...defaultStudents];
-                
-                populateStudentDropdown();
-                filterData();
-            } catch (error) {
-                console.error("Error loading data from Google Sheets:", error);
-                students = [...defaultStudents];
-                scores = {};
-                populateStudentDropdown();
-                filterData();
-            }
-        }
-
-        async function addStudent() {
-            if (currentTeacher && currentTeacher.allowed.length > 0) {
-                alert('Access Denied: Only administrators can add new students.');
-                return;
-            }
-
-            const nameInput = document.getElementById('newStudentName');
-            const name = nameInput.value.trim();
-            const std = document.getElementById('newStudentClass').value;
-            const house = document.getElementById('newStudentHouse').value;
-
-            if (!name) {
-                alert('Please enter a student name.');
-                return;
-            }
-
-            const newStudent = { name, std, house };
-            students.push(newStudent);
-            nameInput.value = '';
-            
-            await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "addStudent", student: newStudent })
-            });
-
-            populateStudentDropdown();
-            filterData();
-            alert('New student added and synced to Google Sheets!');
-        }
-
-        function populateStudentDropdown() {
-            const classVal = document.getElementById('classFilter').value;
-            const houseVal = document.getElementById('houseFilter').value;
-            const dropdown = document.getElementById('studentDropdown');
-            dropdown.innerHTML = '<option value="">-- All Students --</option>';
-
-            students.forEach((student) => {
-                const matchClass = (classVal === "ALL" || student.std === classVal);
-                const matchHouse = (houseVal === "ALL" || student.house === houseVal);
-
-                if (matchClass && matchHouse) {
-                    const opt = document.createElement('option');
-                    opt.value = student.name;
-                    opt.textContent = `${student.name} (${student.std} - ${student.house})`;
-                    dropdown.appendChild(opt);
+                if (result && result.scores && Object.keys(result.scores).length > 0) {
+                    scores = result.scores;
+                } else {
+                    scores = {};
                 }
+                students = result.students && result.students.length > 0 ? result.students : [...defaultStudents];
+            } catch (error) {
+                console.warn("Using default roster fallback:", error);
+                scores = {};
+                students = [...defaultStudents];
+            }
+            
+            renderLeaderboard();
+            renderTable();
+        }
+
+        function calculateTotal(index) {
+            const s = scores[index] || {
+                disc: 0, unif: 0, hin: 0, eng: 0, mar: 0,
+                math: 0, sci: 0, gk: 0, ict: 0, lib: 0, rob: 0, ss: 0
+            };
+            
+            return (Number(s.disc) || 0) + (Number(s.unif) || 0) + (Number(s.hin) || 0) + 
+                   (Number(s.eng) || 0) + (Number(s.mar) || 0) + (Number(s.math) || 0) + 
+                   (Number(s.sci) || 0) + (Number(s.gk) || 0) + (Number(s.ict) || 0) + 
+                   (Number(s.lib) || 0) + (Number(s.rob) || 0) + (Number(s.ss) || 0);
+        }
+
+        function renderLeaderboard() {
+            const grid = document.getElementById('leaderboardGrid');
+            grid.innerHTML = '';
+
+            const classes = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+
+            classes.forEach(cls => {
+                let topStudent = null;
+                let maxPoints = -1;
+
+                students.forEach((student, index) => {
+                    if (student.std === cls) {
+                        const total = calculateTotal(index);
+                        if (total > maxPoints) {
+                            maxPoints = total;
+                            topStudent = student;
+                        }
+                    }
+                });
+
+                const card = document.createElement('div');
+                card.className = 'leader-card';
+                
+                if (topStudent && maxPoints > 0) {
+                    card.innerHTML = `
+                        <h3>Class ${cls}</h3>
+                        <div class="leader-name">🥇 ${topStudent.name}</div>
+                        <div class="leader-points">${maxPoints} Points (${topStudent.house} House)</div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <h3>Class ${cls}</h3>
+                        <div class="leader-name" style="color: #94a3b8; font-weight: normal;">No points recorded</div>
+                        <div class="leader-points">0 Points</div>
+                    `;
+                }
+                grid.appendChild(card);
             });
         }
 
-        function renderTable(filterClass = "ALL", filterHouse = "ALL", searchQuery = "", selectedStudent = "") {
+        function renderTable(filterClass = "ALL", filterHouse = "ALL", searchQuery = "") {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             let srNo = 1;
@@ -986,106 +828,49 @@
             students.forEach((student, index) => {
                 if (filterClass !== "ALL" && student.std !== filterClass) return;
                 if (filterHouse !== "ALL" && student.house !== filterHouse) return;
-                if (selectedStudent && student.name !== selectedStudent) return;
                 if (searchQuery && !student.name.toLowerCase().includes(searchQuery.toLowerCase())) return;
 
-                if (!scores[index]) {
-                    scores[index] = {
-                        disc: 0, unif: 0, hin: 0, eng: 0, mar: 0,
-                        math: 0, sci: 0, gk: 0, ict: 0, lib: 0, rob: 0, ss: 0
-                    };
-                }
+                const s = scores[index] || {
+                    disc: 0, unif: 0, hin: 0, eng: 0, mar: 0,
+                    math: 0, sci: 0, gk: 0, ict: 0, lib: 0, rob: 0, ss: 0
+                };
 
-                const s = scores[index];
-                const total = s.disc + s.unif + s.hin + s.eng + s.mar + s.math + s.sci + s.gk + s.ict + s.lib + s.rob + s.ss;
+                const total = calculateTotal(index);
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${srNo++}</td>
                     <td class="student-name">${student.name}</td>
-                    <td>${student.std}</td>
-                    <td>${student.house}</td>
-                    ${createScoreCell(index, 'disc', s.disc)}
-                    ${createScoreCell(index, 'unif', s.unif)}
-                    ${createScoreCell(index, 'hin', s.hin)}
-                    ${createScoreCell(index, 'eng', s.eng)}
-                    ${createScoreCell(index, 'mar', s.mar)}
-                    ${createScoreCell(index, 'math', s.math)}
-                    ${createScoreCell(index, 'sci', s.sci)}
-                    ${createScoreCell(index, 'gk', s.gk)}
-                    ${createScoreCell(index, 'ict', s.ict)}
-                    ${createScoreCell(index, 'lib', s.lib)}
-                    ${createScoreCell(index, 'rob', s.rob)}
-                    ${createScoreCell(index, 'ss', s.ss)}
-                    <td class="total-cell" id="total-${index}">${total}</td>
+                    <td>Class ${student.std}</td>
+                    <td><span class="house-tag house-${student.house.toLowerCase()}">${student.house}</span></td>
+                    <td>${Number(s.disc) || 0}</td>
+                    <td>${Number(s.unif) || 0}</td>
+                    <td>${Number(s.hin) || 0}</td>
+                    <td>${Number(s.eng) || 0}</td>
+                    <td>${Number(s.mar) || 0}</td>
+                    <td>${Number(s.math) || 0}</td>
+                    <td>${Number(s.sci) || 0}</td>
+                    <td>${Number(s.gk) || 0}</td>
+                    <td>${Number(s.ict) || 0}</td>
+                    <td>${Number(s.lib) || 0}</td>
+                    <td>${Number(s.rob) || 0}</td>
+                    <td>${Number(s.ss) || 0}</td>
+                    <td class="total-cell">${total}</td>
                 `;
                 tbody.appendChild(tr);
             });
-        }
-
-        function createScoreCell(index, field, value) {
-            const isAllowed = !currentTeacher || currentTeacher.allowed.length === 0 || currentTeacher.allowed.includes(field);
-            
-            if (isAllowed) {
-                return `
-                    <td>
-                        <button class="point-btn" onclick="updatePoint(${index}, '${field}', -1)">-</button>
-                        <span id="${field}-${index}">${value}</span>
-                        <button class="point-btn" onclick="updatePoint(${index}, '${field}', 1)">+</button>
-                    </td>
-                `;
-            } else {
-                return `
-                    <td>
-                        <button class="point-btn disabled" disabled>-</button>
-                        <span id="${field}-${index}" style="color: #94a3b8;">${value}</span>
-                        <button class="point-btn disabled" disabled>+</button>
-                    </td>
-                `;
-            }
-        }
-
-        async function updatePoint(index, field, change) {
-            if (currentTeacher && currentTeacher.allowed.length > 0 && !currentTeacher.allowed.includes(field)) {
-                alert("Permission Denied: You cannot modify columns assigned to other teachers.");
-                return;
-            }
-
-            const currentVal = scores[index][field];
-            const newVal = currentVal + change;
-
-            // Restrict point range between 0 and 5
-            if (newVal >= 0 && newVal <= 5) {
-                scores[index][field] = newVal;
-                document.getElementById(`${field}-${index}`).innerText = newVal;
-
-                const s = scores[index];
-                const total = s.disc + s.unif + s.hin + s.eng + s.mar + s.math + s.sci + s.gk + s.ict + s.lib + s.rob + s.ss;
-                document.getElementById(`total-${index}`).innerText = total;
-
-                // Automatically save instantly to Google Sheets in the background
-                await fetch(API_URL, {
-                    method: "POST",
-                    body: JSON.stringify({ action: "saveScores", scores: scores })
-                });
-            }
         }
 
         function filterData() {
             const classVal = document.getElementById('classFilter').value;
             const houseVal = document.getElementById('houseFilter').value;
             const searchVal = document.getElementById('searchInput').value;
-            const studentVal = document.getElementById('studentDropdown').value;
-            renderTable(classVal, houseVal, searchVal, studentVal);
+            renderTable(classVal, houseVal, searchVal);
         }
 
-        async function saveData() {
-            await fetch(API_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "saveScores", scores: scores })
-            });
-            alert('Progress successfully synced to Google Sheets!');
-        }
+        window.onload = function() {
+            loadData();
+        };
     </script>
-</body>   
+</body>
 </html>
