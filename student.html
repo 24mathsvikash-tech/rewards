@@ -146,7 +146,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 1200px;
+            min-width: 1350px;
         }
 
         th, td {
@@ -188,6 +188,13 @@
             color: var(--primary);
             background-color: #eff6ff;
             font-size: 14px;
+        }
+
+        .feedback-cell {
+            font-style: italic;
+            color: #475569;
+            text-align: left;
+            max-width: 180px;
         }
 
         @media print {
@@ -265,6 +272,7 @@
                     <th>Robotics</th>
                     <th>SS</th>
                     <th>Total Points</th>
+                    <th>Teacher Remark / Feedback</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -746,6 +754,7 @@
 
         let students = [];
         let scores = {};
+        let feedback = {};
 
         async function loadData() {
             try {
@@ -758,10 +767,12 @@
                     scores = {};
                 }
                 students = result.students && result.students.length > 0 ? result.students : [...defaultStudents];
+                feedback = result.feedback || {};
             } catch (error) {
                 console.warn("Using default roster fallback:", error);
                 scores = {};
                 students = [...defaultStudents];
+                feedback = {};
             }
             
             renderLeaderboard();
@@ -836,6 +847,7 @@
                 };
 
                 const total = calculateTotal(index);
+                const currentFeedback = feedback[index] || "-";
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -856,6 +868,7 @@
                     <td>${Number(s.rob) || 0}</td>
                     <td>${Number(s.ss) || 0}</td>
                     <td class="total-cell">${total}</td>
+                    <td class="feedback-cell">${currentFeedback}</td>
                 `;
                 tbody.appendChild(tr);
             });
