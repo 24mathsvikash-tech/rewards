@@ -61,7 +61,6 @@
             background: #dc2626;
         }
 
-        /* Login Overlay */
         #loginOverlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -176,7 +175,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
-            min-width: 1450px;
+            min-width: 1500px;
         }
 
         th, td {
@@ -229,11 +228,12 @@
         }
 
         .feedback-input {
-            width: 150px;
+            width: 130px;
             padding: 4px 6px;
             border: 1px solid var(--border);
             border-radius: 4px;
             font-size: 11px;
+            margin-top: 4px;
         }
 
         .hidden {
@@ -244,15 +244,12 @@
             .controls, .add-student-panel, .point-btn, #loginOverlay {
                 display: none;
             }
-            body {
-                padding: 0;
-            }
+            body { padding: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Login Modal -->
     <div id="loginOverlay">
         <div class="login-card">
             <h2>Faculty Login</h2>
@@ -284,58 +281,42 @@
         <button id="logoutBtn" class="logout-btn hidden" onclick="handleLogout()">Logout</button>
     </header>
 
-    <!-- Panel to add new students dynamically (Admin only) -->
     <div id="addStudentPanel" class="add-student-panel hidden">
         <label>Add New Student:</label>
         <input type="text" id="newStudentName" placeholder="Full Student Name">
         
         <select id="newStudentClass">
-            <option value="I">Class I</option>
-            <option value="II">Class II</option>
-            <option value="III">Class III</option>
-            <option value="IV">Class IV</option>
-            <option value="V">Class V</option>
-            <option value="VI">Class VI</option>
-            <option value="VII">Class VII</option>
-            <option value="VIII">Class VIII</option>
-            <option value="IX">Class IX</option>
-            <option value="X">Class X</option>
+            <option value="I">Class I</option><option value="II">Class II</option>
+            <option value="III">Class III</option><option value="IV">Class IV</option>
+            <option value="V">Class V</option><option value="VI">Class VI</option>
+            <option value="VII">Class VII</option><option value="VIII">Class VIII</option>
+            <option value="IX">Class IX</option><option value="X">Class X</option>
         </select>
 
         <select id="newStudentHouse">
-            <option value="Blue">Blue House</option>
-            <option value="Green">Green House</option>
-            <option value="Red">Red House</option>
-            <option value="Yellow">Yellow House</option>
+            <option value="Blue">Blue House</option><option value="Green">Green House</option>
+            <option value="Red">Red House</option><option value="Yellow">Yellow House</option>
         </select>
 
         <button type="button" class="btn btn-add" onclick="addStudent()">+ Add Student</button>
     </div>
 
-    <!-- Controls for Filtering -->
     <div class="controls">
         <label for="classFilter">Select Class:</label>
         <select id="classFilter" onchange="populateStudentDropdown(); filterData();">
             <option value="ALL">-- All Classes --</option>
-            <option value="I">Class I</option>
-            <option value="II">Class II</option>
-            <option value="III">Class III</option>
-            <option value="IV">Class IV</option>
-            <option value="V">Class V</option>
-            <option value="VI">Class VI</option>
-            <option value="VII">Class VII</option>
-            <option value="VIII">Class VIII</option>
-            <option value="IX">Class IX</option>
-            <option value="X">Class X</option>
+            <option value="I">Class I</option><option value="II">Class II</option>
+            <option value="III">Class III</option><option value="IV">Class IV</option>
+            <option value="V">Class V</option><option value="VI">Class VI</option>
+            <option value="VII">Class VII</option><option value="VIII">Class VIII</option>
+            <option value="IX">Class IX</option><option value="X">Class X</option>
         </select>
 
         <label for="houseFilter">Select House:</label>
         <select id="houseFilter" onchange="populateStudentDropdown(); filterData();">
             <option value="ALL">-- All Houses --</option>
-            <option value="Blue">Blue</option>
-            <option value="Green">Green</option>
-            <option value="Red">Red</option>
-            <option value="Yellow">Yellow</option>
+            <option value="Blue">Blue</option><option value="Green">Green</option>
+            <option value="Red">Red</option><option value="Yellow">Yellow</option>
         </select>
 
         <label for="studentDropdown">Select Student:</label>
@@ -367,14 +348,12 @@
                     <th>GK</th>
                     <th>ICT</th>
                     <th>Library</th>
-                    <th>Dance</th>
+                    <th>Robotics</th>
                     <th>SS</th>
                     <th>Total Points</th>
-                    <th>Teacher Feedback</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
-                <!-- Data populated dynamically via JS -->
             </tbody>
         </table>
     </div>
@@ -388,7 +367,7 @@
             "vikash": { pass: "vikash123", name: "Vikash Yadav (Admin)", allowed: [] },
             "pankaj": { pass: "pass123", name: "Pankaj", allowed: ["hin"] },
             "jayanti": { pass: "pass123", name: "Jayanti Dash", allowed: ["hin", "ss"] },
-            "parmila": { pass: "pass123", name: "Parmila Yadav", allowed: ["disc", "unif"] },
+            "parmila": { pass: "pass123", name: "Parmila Yadav", allowed: ["hin"] },
             "khairunnisa": { pass: "pass123", name: "Khairunnisa Sayed", allowed: ["eng", "ss"] },
             "santoshi": { pass: "pass123", name: "Santoshi Padhi", allowed: ["eng"] },
             "sharvari": { pass: "pass123", name: "Sharvari Hirlekar", allowed: ["eng"] },
@@ -401,21 +380,23 @@
             "swati": { pass: "pass123", name: "Swati Khaire", allowed: ["mar"] },
             "dinesh": { pass: "pass123", name: "Dinesh Lagad", allowed: ["disc", "unif"] },
             "prasant": { pass: "pass123", name: "Prasant Kumar Pandey", allowed: ["disc", "unif"] },
-            "Ridhi": { pass: "pass123", name: "Ridhi", allowed: ["disc", "A/C"] },
+            "vinod": { pass: "pass123", name: "Vinod Tapase", allowed: ["disc", "unif"] },
             "shruti": { pass: "pass123", name: "Shruti Saxena", allowed: ["ict"] },
-            "akshay": { pass: "pass123", name: "Akshay Kamble", allowed: ["Dance"] },
-            "ashutosh": { pass: "pass123", name: "Ashutosh Thorat", allowed: ["Music"] },
-            "anagha": { pass: "pass123", name: "Anagha Samudra", allowed: ["disc", "unif"] },
+            "akshay": { pass: "pass123", name: "Akshay Kamble", allowed: ["rob", "gk"] },
+            "ashutosh": { pass: "pass123", name: "Ashutosh Thorat", allowed: ["lib", "gk"] },
+            "anagha": { pass: "pass123", name: "Anagha Samudra", allowed: ["gk"] },
             "shalini": { pass: "pass123", name: "Shalini Pandey", allowed: ["disc"] },
             "mamta": { pass: "pass123", name: "Mamta Yadav", allowed: ["gk"] },
-            "prerna": { pass: "pass123", name: "Prerna Poojari", allowed: ["unf"] },
+            "prerna": { pass: "pass123", name: "Prerna Poojari", allowed: ["gk"] },
             "sulochana": { pass: "pass123", name: "Sulochana Nair", allowed: ["gk"] }
         };
 
         let currentTeacher = null;
+        let students = [];
+        let scores = {};
+        let feedback = {};
 
         const defaultStudents = [
-            // BLUE HOUSE
             { name: "AARAV KAMLESH GAUD", std: "I", house: "Blue" },
             { name: "ANVIT NILESH RANE", std: "I", house: "Blue" },
             { name: "DIKSHA AMIT CHATURVEDI", std: "I", house: "Blue" },
@@ -534,8 +515,6 @@
             { name: "ARSH BAITTA", std: "V", house: "Blue" },
             { name: "RISHI KARANDE", std: "VI", house: "Blue" },
             { name: "SATYAM YADAV", std: "VII", house: "Blue" },
-
-            // GREEN HOUSE
             { name: "AASHWI JAGDISH PATIL", std: "I", house: "Green" },
             { name: "ADARSH JADHAV", std: "I", house: "Green" },
             { name: "ADV IT SAGAR SHINGAN", std: "I", house: "Green" },
@@ -655,8 +634,6 @@
             { name: "HARLEEN BANGARE", std: "I", house: "Green" },
             { name: "DIVIJA", std: "II", house: "Green" },
             { name: "DHRUV PATIL", std: "III", house: "Green" },
-
-            // RED HOUSE
             { name: "ANUJ SACHIN KURHADKAR", std: "I", house: "Red" },
             { name: "DAKSH ANIL PARKHE", std: "I", house: "Red" },
             { name: "GLORY DOLAS", std: "I", house: "Red" },
@@ -768,8 +745,6 @@
             { name: "PRATEEK YADAV", std: "I", house: "Red" },
             { name: "KANU", std: "IV", house: "Red" },
             { name: "SHAURYA PRATAP", std: "V", house: "Red" },
-
-            // YELLOW HOUSE
             { name: "AAI KUMARI", std: "I", house: "Yellow" },
             { name: "AARADHYA KULKARNI", std: "I", house: "Yellow" },
             { name: "ANUSHKA SINGH", std: "I", house: "Yellow" },
@@ -881,10 +856,6 @@
             { name: "KHUSHI DHONGADI", std: "VIII", house: "Yellow" }
         ];
 
-        let students = [];
-        let scores = {};
-        let feedback = {};
-
         function handleLogin(e) {
             e.preventDefault();
             const id = document.getElementById('teacherId').value.trim().toLowerCase();
@@ -900,7 +871,7 @@
                     document.getElementById('addStudentPanel').classList.remove('hidden');
                     document.getElementById('headerSubtitle').innerText = `Logged in as: ${currentTeacher.name} (Full Admin Access)`;
                 } else {
-                    document.getElementById('headerSubtitle').innerText = `Logged in as: ${currentTeacher.name} (Authorized Categories)`;
+                    document.getElementById('headerSubtitle').innerText = `Logged in as: ${currentTeacher.name} (Assigned Sections)`;
                 }
 
                 loadData();
@@ -951,10 +922,7 @@
             const std = document.getElementById('newStudentClass').value;
             const house = document.getElementById('newStudentHouse').value;
 
-            if (!name) {
-                alert('Please enter a student name.');
-                return;
-            }
+            if (!name) { alert('Please enter a student name.'); return; }
 
             const newStudent = { name, std, house };
             students.push(newStudent);
@@ -979,7 +947,6 @@
             students.forEach((student) => {
                 const matchClass = (classVal === "ALL" || student.std === classVal);
                 const matchHouse = (houseVal === "ALL" || student.house === houseVal);
-
                 if (matchClass && matchHouse) {
                     const opt = document.createElement('option');
                     opt.value = student.name;
@@ -1007,13 +974,15 @@
                     };
                 }
 
+                if (!feedback[index]) {
+                    feedback[index] = {};
+                }
+
                 const s = scores[index];
                 const total = Number(s.disc || 0) + Number(s.unif || 0) + Number(s.hin || 0) + 
                               Number(s.eng || 0) + Number(s.mar || 0) + Number(s.math || 0) + 
                               Number(s.sci || 0) + Number(s.gk || 0) + Number(s.ict || 0) + 
                               Number(s.lib || 0) + Number(s.rob || 0) + Number(s.ss || 0);
-
-                const currentFeedback = feedback[index] || "";
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -1021,44 +990,48 @@
                     <td class="student-name">${student.name}</td>
                     <td>${student.std}</td>
                     <td>${student.house}</td>
-                    ${createScoreCell(index, 'disc', Number(s.disc) || 0)}
-                    ${createScoreCell(index, 'unif', Number(s.unif) || 0)}
-                    ${createScoreCell(index, 'hin', Number(s.hin) || 0)}
-                    ${createScoreCell(index, 'eng', Number(s.eng) || 0)}
-                    ${createScoreCell(index, 'mar', Number(s.mar) || 0)}
-                    ${createScoreCell(index, 'math', Number(s.math) || 0)}
-                    ${createScoreCell(index, 'sci', Number(s.sci) || 0)}
-                    ${createScoreCell(index, 'gk', Number(s.gk) || 0)}
-                    ${createScoreCell(index, 'ict', Number(s.ict) || 0)}
-                    ${createScoreCell(index, 'lib', Number(s.lib) || 0)}
-                    ${createScoreCell(index, 'rob', Number(s.rob) || 0)}
-                    ${createScoreCell(index, 'ss', Number(s.ss) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'disc', Number(s.disc) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'unif', Number(s.unif) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'hin', Number(s.hin) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'eng', Number(s.eng) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'mar', Number(s.mar) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'math', Number(s.math) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'sci', Number(s.sci) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'gk', Number(s.gk) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'ict', Number(s.ict) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'lib', Number(s.lib) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'rob', Number(s.rob) || 0)}
+                    ${createScoreAndFeedbackCell(index, 'ss', Number(s.ss) || 0)}
                     <td class="total-cell" id="total-${index}">${total}</td>
-                    <td>
-                        <input type="text" class="feedback-input" id="fb-${index}" value="${currentFeedback}" placeholder="Enter remark..." onchange="updateFeedback(${index}, this.value)">
-                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function createScoreCell(index, field, value) {
+        function createScoreAndFeedbackCell(index, field, value) {
             const isAllowed = !currentTeacher || currentTeacher.allowed.length === 0 || currentTeacher.allowed.includes(field);
-            
+            const currentFb = (feedback[index] && feedback[index][field]) || "";
+
             if (isAllowed) {
                 return `
                     <td>
-                        <button class="point-btn" onclick="updatePoint(${index}, '${field}', -1)">-</button>
-                        <span id="${field}-${index}">${value}</span>
-                        <button class="point-btn" onclick="updatePoint(${index}, '${field}', 1)">+</button>
+                        <div style="margin-bottom: 4px;">
+                            <button class="point-btn" onclick="updatePoint(${index}, '${field}', -1)">-</button>
+                            <span id="${field}-${index}">${value}</span>
+                            <button class="point-btn" onclick="updatePoint(${index}, '${field}', 1)">+</button>
+                        </div>
+                        <input type="text" class="feedback-input" id="fb-${index}-${field}" value="${currentFb}" placeholder="Remark..." onchange="updateCategoryFeedback(${index}, '${field}', this.value)">
                     </td>
                 `;
             } else {
                 return `
                     <td>
-                        <button class="point-btn disabled" disabled>-</button>
-                        <span id="${field}-${index}" style="color: #94a3b8;">${value}</span>
-                        <button class="point-btn disabled" disabled>+</button>
+                        <div style="margin-bottom: 4px;">
+                            <button class="point-btn disabled" disabled>-</button>
+                            <span id="${field}-${index}" style="color: #94a3b8;">${value}</span>
+                            <button class="point-btn disabled" disabled>+</button>
+                        </div>
+                        <div style="font-size: 10px; color: #64748b; font-style: italic;">${currentFb || '-'}</div>
                     </td>
                 `;
             }
@@ -1091,8 +1064,9 @@
             }
         }
 
-        async function updateFeedback(index, value) {
-            feedback[index] = value;
+        async function updateCategoryFeedback(index, field, value) {
+            if (!feedback[index]) feedback[index] = {};
+            feedback[index][field] = value;
             await fetch(API_URL, {
                 method: "POST",
                 body: JSON.stringify({ action: "saveFeedback", feedback: feedback })
@@ -1116,8 +1090,8 @@
                 method: "POST",
                 body: JSON.stringify({ action: "saveFeedback", feedback: feedback })
             });
-            alert('Progress and feedback successfully synced to Google Sheets!');
+            alert('Progress and category remarks successfully synced to Google Sheets!');
         }
     </script>
-</body>   
+</body>
 </html>
