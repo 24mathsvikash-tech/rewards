@@ -53,7 +53,6 @@
             font-size: 14px;
         }
 
-        /* Leaderboard Section */
         .leaderboard-section {
             background: white;
             padding: 20px;
@@ -145,8 +144,8 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
-            min-width: 1350px;
+            font-size: 12px;
+            min-width: 1400px;
         }
 
         th, td {
@@ -190,11 +189,11 @@
             font-size: 14px;
         }
 
-        .feedback-cell {
-            font-style: italic;
+        .remark-text {
+            font-size: 10px;
             color: #475569;
-            text-align: left;
-            max-width: 180px;
+            font-style: italic;
+            margin-top: 3px;
         }
 
         @media print {
@@ -213,38 +212,27 @@
         </div>
     </header>
 
-    <!-- Class-wise Leaderboard Section -->
     <div class="leaderboard-section">
         <h2>🏆 Class-wise Leaders (Top Scorers)</h2>
-        <div id="leaderboardGrid" class="leaderboard-grid">
-            <!-- Populated dynamically -->
-        </div>
+        <div id="leaderboardGrid" class="leaderboard-grid"></div>
     </div>
 
-    <!-- Search & Filter Controls -->
     <div class="controls">
         <label for="classFilter">Class:</label>
         <select id="classFilter" onchange="filterData()">
             <option value="ALL">-- All Classes --</option>
-            <option value="I">Class I</option>
-            <option value="II">Class II</option>
-            <option value="III">Class III</option>
-            <option value="IV">Class IV</option>
-            <option value="V">Class V</option>
-            <option value="VI">Class VI</option>
-            <option value="VII">Class VII</option>
-            <option value="VIII">Class VIII</option>
-            <option value="IX">Class IX</option>
-            <option value="X">Class X</option>
+            <option value="I">Class I</option><option value="II">Class II</option>
+            <option value="III">Class III</option><option value="IV">Class IV</option>
+            <option value="V">Class V</option><option value="VI">Class VI</option>
+            <option value="VII">Class VII</option><option value="VIII">Class VIII</option>
+            <option value="IX">Class IX</option><option value="X">Class X</option>
         </select>
 
         <label for="houseFilter">House:</label>
         <select id="houseFilter" onchange="filterData()">
             <option value="ALL">-- All Houses --</option>
-            <option value="Blue">Blue House</option>
-            <option value="Green">Green House</option>
-            <option value="Red">Red House</option>
-            <option value="Yellow">Yellow House</option>
+            <option value="Blue">Blue House</option><option value="Green">Green House</option>
+            <option value="Red">Red House</option><option value="Yellow">Yellow House</option>
         </select>
 
         <label for="searchInput">Find Student Name:</label>
@@ -272,11 +260,9 @@
                     <th>Robotics</th>
                     <th>SS</th>
                     <th>Total Points</th>
-                    <th>Teacher Remark / Feedback</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
-                <!-- Loaded dynamically -->
             </tbody>
         </table>
     </div>
@@ -285,8 +271,11 @@
         // Replace with your Google Apps Script Web App URL
         const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL";
 
+        let students = [];
+        let scores = {};
+        let feedback = {};
+
         const defaultStudents = [
-            // BLUE HOUSE
             { name: "AARAV KAMLESH GAUD", std: "I", house: "Blue" },
             { name: "ANVIT NILESH RANE", std: "I", house: "Blue" },
             { name: "DIKSHA AMIT CHATURVEDI", std: "I", house: "Blue" },
@@ -405,8 +394,6 @@
             { name: "ARSH BAITTA", std: "V", house: "Blue" },
             { name: "RISHI KARANDE", std: "VI", house: "Blue" },
             { name: "SATYAM YADAV", std: "VII", house: "Blue" },
-
-            // GREEN HOUSE
             { name: "AASHWI JAGDISH PATIL", std: "I", house: "Green" },
             { name: "ADARSH JADHAV", std: "I", house: "Green" },
             { name: "ADV IT SAGAR SHINGAN", std: "I", house: "Green" },
@@ -526,8 +513,6 @@
             { name: "HARLEEN BANGARE", std: "I", house: "Green" },
             { name: "DIVIJA", std: "II", house: "Green" },
             { name: "DHRUV PATIL", std: "III", house: "Green" },
-
-            // RED HOUSE
             { name: "ANUJ SACHIN KURHADKAR", std: "I", house: "Red" },
             { name: "DAKSH ANIL PARKHE", std: "I", house: "Red" },
             { name: "GLORY DOLAS", std: "I", house: "Red" },
@@ -639,8 +624,6 @@
             { name: "PRATEEK YADAV", std: "I", house: "Red" },
             { name: "KANU", std: "IV", house: "Red" },
             { name: "SHAURYA PRATAP", std: "V", house: "Red" },
-
-            // YELLOW HOUSE
             { name: "AAI KUMARI", std: "I", house: "Yellow" },
             { name: "AARADHYA KULKARNI", std: "I", house: "Yellow" },
             { name: "ANUSHKA SINGH", std: "I", house: "Yellow" },
@@ -752,39 +735,25 @@
             { name: "KHUSHI DHONGADI", std: "VIII", house: "Yellow" }
         ];
 
-        let students = [];
-        let scores = {};
-        let feedback = {};
-
         async function loadData() {
             try {
                 const response = await fetch(`${API_URL}?action=getData`);
                 const result = await response.json();
-                
-                if (result && result.scores && Object.keys(result.scores).length > 0) {
-                    scores = result.scores;
-                } else {
-                    scores = {};
-                }
+                scores = result.scores && Object.keys(result.scores).length > 0 ? result.scores : {};
                 students = result.students && result.students.length > 0 ? result.students : [...defaultStudents];
                 feedback = result.feedback || {};
             } catch (error) {
-                console.warn("Using default roster fallback:", error);
+                console.warn("Using local fallback:", error);
                 scores = {};
                 students = [...defaultStudents];
                 feedback = {};
             }
-            
             renderLeaderboard();
             renderTable();
         }
 
         function calculateTotal(index) {
-            const s = scores[index] || {
-                disc: 0, unif: 0, hin: 0, eng: 0, mar: 0,
-                math: 0, sci: 0, gk: 0, ict: 0, lib: 0, rob: 0, ss: 0
-            };
-            
+            const s = scores[index] || {};
             return (Number(s.disc) || 0) + (Number(s.unif) || 0) + (Number(s.hin) || 0) + 
                    (Number(s.eng) || 0) + (Number(s.mar) || 0) + (Number(s.math) || 0) + 
                    (Number(s.sci) || 0) + (Number(s.gk) || 0) + (Number(s.ict) || 0) + 
@@ -794,7 +763,6 @@
         function renderLeaderboard() {
             const grid = document.getElementById('leaderboardGrid');
             grid.innerHTML = '';
-
             const classes = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 
             classes.forEach(cls => {
@@ -813,7 +781,6 @@
 
                 const card = document.createElement('div');
                 card.className = 'leader-card';
-                
                 if (topStudent && maxPoints > 0) {
                     card.innerHTML = `
                         <h3>Class ${cls}</h3>
@@ -823,7 +790,7 @@
                 } else {
                     card.innerHTML = `
                         <h3>Class ${cls}</h3>
-                        <div class="leader-name" style="color: #94a3b8; font-weight: normal;">No points recorded</div>
+                        <div class="leader-name" style="color: #94a3b8; font-weight: normal;">No points</div>
                         <div class="leader-points">0 Points</div>
                     `;
                 }
@@ -841,13 +808,15 @@
                 if (filterHouse !== "ALL" && student.house !== filterHouse) return;
                 if (searchQuery && !student.name.toLowerCase().includes(searchQuery.toLowerCase())) return;
 
-                const s = scores[index] || {
-                    disc: 0, unif: 0, hin: 0, eng: 0, mar: 0,
-                    math: 0, sci: 0, gk: 0, ict: 0, lib: 0, rob: 0, ss: 0
-                };
-
+                const s = scores[index] || {};
+                const f = feedback[index] || {};
                 const total = calculateTotal(index);
-                const currentFeedback = feedback[index] || "-";
+
+                const renderCell = (field) => {
+                    const val = Number(s[field]) || 0;
+                    const remark = f[field] ? `<div class="remark-text">"${f[field]}"</div>` : '';
+                    return `<td>${val}${remark}</td>`;
+                };
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -855,20 +824,19 @@
                     <td class="student-name">${student.name}</td>
                     <td>Class ${student.std}</td>
                     <td><span class="house-tag house-${student.house.toLowerCase()}">${student.house}</span></td>
-                    <td>${Number(s.disc) || 0}</td>
-                    <td>${Number(s.unif) || 0}</td>
-                    <td>${Number(s.hin) || 0}</td>
-                    <td>${Number(s.eng) || 0}</td>
-                    <td>${Number(s.mar) || 0}</td>
-                    <td>${Number(s.math) || 0}</td>
-                    <td>${Number(s.sci) || 0}</td>
-                    <td>${Number(s.gk) || 0}</td>
-                    <td>${Number(s.ict) || 0}</td>
-                    <td>${Number(s.lib) || 0}</td>
-                    <td>${Number(s.rob) || 0}</td>
-                    <td>${Number(s.ss) || 0}</td>
+                    ${renderCell('disc')}
+                    ${renderCell('unif')}
+                    ${renderCell('hin')}
+                    ${renderCell('eng')}
+                    ${renderCell('mar')}
+                    ${renderCell('math')}
+                    ${renderCell('sci')}
+                    ${renderCell('gk')}
+                    ${renderCell('ict')}
+                    ${renderCell('lib')}
+                    ${renderCell('rob')}
+                    ${renderCell('ss')}
                     <td class="total-cell">${total}</td>
-                    <td class="feedback-cell">${currentFeedback}</td>
                 `;
                 tbody.appendChild(tr);
             });
