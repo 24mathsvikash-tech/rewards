@@ -176,7 +176,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
-            min-width: 1300px;
+            min-width: 1450px;
         }
 
         th, td {
@@ -226,6 +226,14 @@
             font-weight: bold;
             color: var(--primary);
             background-color: #eff6ff;
+        }
+
+        .feedback-input {
+            width: 150px;
+            padding: 4px 6px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 11px;
         }
 
         .hidden {
@@ -359,9 +367,11 @@
                     <th>GK</th>
                     <th>ICT</th>
                     <th>Library</th>
-                    <th>Robotics</th>
+                    <th>Dance</th>
+                    <th>Music</th>
                     <th>SS</th>
                     <th>Total Points</th>
+                    <th>Teacher Feedback</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -374,13 +384,12 @@
         // Replace with your Google Apps Script Web App URL
         const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL";
 
-        // Faculty DB mapping usernames to allowed fields. Empty array [] means Admin.
         const teachersDB = {
             "vijeta": { pass: "vijeta123", name: "Vijeta Sinha (Principal)", allowed: [] },
             "vikash": { pass: "vikash123", name: "Vikash Yadav (Admin)", allowed: [] },
             "pankaj": { pass: "pass123", name: "Pankaj", allowed: ["hin"] },
             "jayanti": { pass: "pass123", name: "Jayanti Dash", allowed: ["hin", "ss"] },
-            "parmila": { pass: "pass123", name: "Parmila Yadav", allowed: ["hin"] },
+            "parmila": { pass: "pass123", name: "Parmila Yadav", allowed: ["disc", "unif"] },
             "khairunnisa": { pass: "pass123", name: "Khairunnisa Sayed", allowed: ["eng", "ss"] },
             "santoshi": { pass: "pass123", name: "Santoshi Padhi", allowed: ["eng"] },
             "sharvari": { pass: "pass123", name: "Sharvari Hirlekar", allowed: ["eng"] },
@@ -393,14 +402,14 @@
             "swati": { pass: "pass123", name: "Swati Khaire", allowed: ["mar"] },
             "dinesh": { pass: "pass123", name: "Dinesh Lagad", allowed: ["disc", "unif"] },
             "prasant": { pass: "pass123", name: "Prasant Kumar Pandey", allowed: ["disc", "unif"] },
-            "vinod": { pass: "pass123", name: "Vinod Tapase", allowed: ["disc", "unif"] },
+            "Ridhi": { pass: "pass123", name: "Ridhi", allowed: ["disc", "A/C"] },
             "shruti": { pass: "pass123", name: "Shruti Saxena", allowed: ["ict"] },
-            "akshay": { pass: "pass123", name: "Akshay Kamble", allowed: ["rob", "gk"] },
-            "ashutosh": { pass: "pass123", name: "Ashutosh Thorat", allowed: ["lib", "gk"] },
-            "anagha": { pass: "pass123", name: "Anagha Samudra", allowed: ["gk"] },
+            "akshay": { pass: "pass123", name: "Akshay Kamble", allowed: ["Dance"] },
+            "ashutosh": { pass: "pass123", name: "Ashutosh Thorat", allowed: ["Music"] },
+            "anagha": { pass: "pass123", name: "Anagha Samudra", allowed: ["disc", "unif"] },
             "shalini": { pass: "pass123", name: "Shalini Pandey", allowed: ["disc"] },
             "mamta": { pass: "pass123", name: "Mamta Yadav", allowed: ["gk"] },
-            "prerna": { pass: "pass123", name: "Prerna Poojari", allowed: ["gk"] },
+            "prerna": { pass: "pass123", name: "Prerna Poojari", allowed: ["unf"] },
             "sulochana": { pass: "pass123", name: "Sulochana Nair", allowed: ["gk"] }
         };
 
@@ -875,6 +884,7 @@
 
         let students = [];
         let scores = {};
+        let feedback = {};
 
         function handleLogin(e) {
             e.preventDefault();
@@ -917,6 +927,7 @@
                 
                 scores = result.scores && Object.keys(result.scores).length > 0 ? result.scores : {};
                 students = result.students && result.students.length > 0 ? result.students : [...defaultStudents];
+                feedback = result.feedback || {};
                 
                 populateStudentDropdown();
                 filterData();
@@ -924,6 +935,7 @@
                 console.error("Error loading data from Google Sheets:", error);
                 students = [...defaultStudents];
                 scores = {};
+                feedback = {};
                 populateStudentDropdown();
                 filterData();
             }
@@ -1002,6 +1014,8 @@
                               Number(s.sci || 0) + Number(s.gk || 0) + Number(s.ict || 0) + 
                               Number(s.lib || 0) + Number(s.rob || 0) + Number(s.ss || 0);
 
+                const currentFeedback = feedback[index] || "";
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${srNo++}</td>
@@ -1021,6 +1035,9 @@
                     ${createScoreCell(index, 'rob', Number(s.rob) || 0)}
                     ${createScoreCell(index, 'ss', Number(s.ss) || 0)}
                     <td class="total-cell" id="total-${index}">${total}</td>
+                    <td>
+                        <input type="text" class="feedback-input" id="fb-${index}" value="${currentFeedback}" placeholder="Enter remark..." onchange="updateFeedback(${index}, this.value)">
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1057,7 +1074,6 @@
             const currentVal = Number(scores[index][field]) || 0;
             const newVal = currentVal + change;
 
-            // Restrict point range between 0 and 5
             if (newVal >= 0 && newVal <= 5) {
                 scores[index][field] = newVal;
                 document.getElementById(`${field}-${index}`).innerText = newVal;
@@ -1069,12 +1085,19 @@
                               Number(s.lib || 0) + Number(s.rob || 0) + Number(s.ss || 0);
                 document.getElementById(`total-${index}`).innerText = total;
 
-                // Automatically save instantly to Google Sheets in the background
                 await fetch(API_URL, {
                     method: "POST",
                     body: JSON.stringify({ action: "saveScores", scores: scores })
                 });
             }
+        }
+
+        async function updateFeedback(index, value) {
+            feedback[index] = value;
+            await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "saveFeedback", feedback: feedback })
+            });
         }
 
         function filterData() {
@@ -1090,7 +1113,11 @@
                 method: "POST",
                 body: JSON.stringify({ action: "saveScores", scores: scores })
             });
-            alert('Progress successfully synced to Google Sheets!');
+            await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "saveFeedback", feedback: feedback })
+            });
+            alert('Progress and feedback successfully synced to Google Sheets!');
         }
     </script>
 </body>   
