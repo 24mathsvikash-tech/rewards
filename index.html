@@ -327,7 +327,7 @@
         <label for="searchInput">Search Name:</label>
         <input type="text" id="searchInput" placeholder="Type student name..." onkeyup="filterData()">
 
-        <button type="button" class="btn" onclick="saveData()">Sync to Google Sheets</button>
+        <button type="button" class="btn" onclick="saveData()">Save</button>
     </div>
 
     <div class="table-container">
@@ -366,8 +366,8 @@
             "vijeta": { pass: "vijeta123", name: "Vijeta Sinha (Principal)", allowed: [] },
             "vikash": { pass: "vikash123", name: "Vikash Yadav (Admin)", allowed: [] },
             "pankaj": { pass: "pass123", name: "Pankaj", allowed: ["hin"] },
-            "jayanti": { pass: "pass123", name: "Jayanti Dash", allowed: ["hin", "ss"] },
-            "pamila": { pass: "pass123", name: "Pamila Yadav", allowed: ["hin"] },
+            "jayanti": { pass: "pass123", name: "Jayanti Dash", allowed: ["hin", "ss","eng"] },
+            "pamila": { pass: "pass123", name: "Pamila Yadav", allowed: ["disc"] },
             "khairunnisa": { pass: "pass123", name: "Khairunnisa Sayed", allowed: ["eng", "ss"] },
             "santoshi": { pass: "pass123", name: "Santoshi Padhi", allowed: ["eng"] },
             "sharvari": { pass: "pass123", name: "Sharvari Hirlekar", allowed: ["eng"] },
@@ -375,20 +375,20 @@
             "binita": { pass: "pass123", name: "Binita Mohapatra", allowed: ["sci"] },
             "indika": { pass: "pass123", name: "Indika Arnakal", allowed: ["sci"] },
             "dhara": { pass: "pass123", name: "Dhara Vyas", allowed: ["sci", "math"] },
-            "vinay": { pass: "pass123", name: "Vinay Kumar Upadhyay", allowed: ["ss", "math"] },
-            "priyanka": { pass: "pass123", name: "Priyanka Redekar", allowed: ["ss"] },
+            "vinay": { pass: "pass123", name: "Vinay Kumar Upadhyay", allowed: ["ss", "disc","unif"] },
+            "priyanka": { pass: "pass123", name: "Priyanka Redekar", allowed: ["ss","ict"] },
             "swati": { pass: "pass123", name: "Swati Khaire", allowed: ["mar"] },
             "dinesh": { pass: "pass123", name: "Dinesh Lagad", allowed: ["disc", "unif"] },
             "prasant": { pass: "pass123", name: "Prasant Kumar Pandey", allowed: ["disc", "unif"] },
             "vinod": { pass: "pass123", name: "Vinod Tapase", allowed: ["disc", "unif"] },
             "shruti": { pass: "pass123", name: "Shruti Saxena", allowed: ["ict"] },
-            "akshay": { pass: "pass123", name: "Akshay Kamble", allowed: ["rob", "gk"] },
-            "ashutosh": { pass: "pass123", name: "Ashutosh Thorat", allowed: ["lib", "gk"] },
-            "anagha": { pass: "pass123", name: "Anagha Samudra", allowed: ["gk"] },
+            "akshay": { pass: "pass123", name: "Akshay Kamble", allowed: ["dan"] },
+            "ashutosh": { pass: "pass123", name: "Ashutosh Thorat", allowed: ["dan"] },
+            "anagha": { pass: "pass123", name: "Anagha Samudra", allowed: ["disc"] },
             "shalini": { pass: "pass123", name: "Shalini Pandey", allowed: ["disc"] },
-            "mamta": { pass: "pass123", name: "Mamta Yadav", allowed: ["gk"] },
-            "prerna": { pass: "pass123", name: "Prerna Poojari", allowed: ["gk"] },
-            "sulochana": { pass: "pass123", name: "Sulochana Nair", allowed: ["gk"] }
+            "mamta": { pass: "pass123", name: "Mamta Yadav", allowed: ["sci"] },
+            "prerna": { pass: "pass123", name: "Prerna Poojari", allowed: ["eng"] },
+            "sulochana": { pass: "pass123", name: "Sulochana Nair", allowed: ["mar"] }
         };
 
         let currentTeacher = null;
