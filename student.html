@@ -747,7 +747,6 @@
                 const result = await response.json();
                 
                 scores = result.scores && Object.keys(result.scores).length > 0 ? result.scores : {};
-                // FIXED: Check if result.students is valid and has records, otherwise fall back to defaultStudents
                 students = (result.students && result.students.length > 0) ? result.students : [...defaultStudents];
                 feedback = result.feedback || {};
             } catch (error) {
