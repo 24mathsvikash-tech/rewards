@@ -57,9 +57,7 @@
             font-weight: bold;
         }
 
-        .logout-btn:hover {
-            background: #dc2626;
-        }
+        .logout-btn:hover { background: #dc2626; }
 
         #loginOverlay {
             position: fixed;
@@ -126,10 +124,6 @@
             border: 1px solid var(--border);
         }
 
-        .controls label, .add-student-panel label {
-            font-weight: bold;
-        }
-
         .controls select, .controls input, .add-student-panel select, .add-student-panel input {
             padding: 8px 12px;
             border: 1px solid var(--border);
@@ -137,9 +131,7 @@
             font-size: 14px;
         }
 
-        .controls input[type="text"] {
-            flex-grow: 1;
-        }
+        .controls input[type="text"] { flex-grow: 1; }
 
         .btn {
             background-color: var(--secondary);
@@ -150,18 +142,9 @@
             cursor: pointer;
             font-weight: bold;
         }
-
-        .btn:hover {
-            background-color: #0369a1;
-        }
-
-        .btn-add {
-            background-color: #16a34a;
-        }
-
-        .btn-add:hover {
-            background-color: #15803d;
-        }
+        .btn:hover { background-color: #0369a1; }
+        .btn-add { background-color: #16a34a; }
+        .btn-add:hover { background-color: #15803d; }
 
         .table-container {
             overflow-x: auto;
@@ -210,16 +193,8 @@
             line-height: 1;
             margin: 0 2px;
         }
-
-        .point-btn:hover {
-            background: #cbd5e1;
-        }
-
-        .point-btn.disabled {
-            background: #f1f5f9;
-            color: #cbd5e1;
-            cursor: not-allowed;
-        }
+        .point-btn:hover { background: #cbd5e1; }
+        .point-btn.disabled { background: #f1f5f9; color: #cbd5e1; cursor: not-allowed; }
 
         .total-cell {
             font-weight: bold;
@@ -236,16 +211,7 @@
             margin-top: 4px;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
-        @media print {
-            .controls, .add-student-panel, .point-btn, #loginOverlay {
-                display: none;
-            }
-            body { padding: 0; }
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -273,7 +239,7 @@
     </div>
 
     <header>
-        <img src="./logo.png" alt="School Logo" class="logo">
+        <img src="./logo.png" alt="School Logo" class="logo" onerror="this.style.display='none'">
         <div>
             <h1>OM PUBLIC SCHOOL</h1>
             <p id="headerSubtitle">Merit & Discipline Points Ledger (Max 5 Marks per Category)</p>
@@ -284,7 +250,6 @@
     <div id="addStudentPanel" class="add-student-panel hidden">
         <label>Add New Student:</label>
         <input type="text" id="newStudentName" placeholder="Full Student Name">
-        
         <select id="newStudentClass">
             <option value="I">Class I</option><option value="II">Class II</option>
             <option value="III">Class III</option><option value="IV">Class IV</option>
@@ -292,12 +257,10 @@
             <option value="VII">Class VII</option><option value="VIII">Class VIII</option>
             <option value="IX">Class IX</option><option value="X">Class X</option>
         </select>
-
         <select id="newStudentHouse">
             <option value="Blue">Blue House</option><option value="Green">Green House</option>
             <option value="Red">Red House</option><option value="Yellow">Yellow House</option>
         </select>
-
         <button type="button" class="btn btn-add" onclick="addStudent()">+ Add Student</button>
     </div>
 
@@ -327,7 +290,7 @@
         <label for="searchInput">Search Name:</label>
         <input type="text" id="searchInput" placeholder="Type student name..." onkeyup="filterData()">
 
-        <button type="button" class="btn" onclick="saveData()">Save</button>
+        <button type="button" class="btn" onclick="saveData()">Save All</button>
     </div>
 
     <div class="table-container">
@@ -359,14 +322,13 @@
     </div>
 
     <script>
-        // Replace with your Google Apps Script Web App URL
         const API_URL = "https://script.google.com/macros/s/AKfycbw8xjGDs19XhFRuo5ba85schaM_34MYth6egFDWh-sjvTQBEIvnnojOfBdgJsgwlJG5Lw/exec";
 
         const teachersDB = {
             "vijeta": { pass: "vijeta123", name: "Vijeta Sinha (Principal)", allowed: [] },
             "vikash": { pass: "vikash123", name: "Vikash Yadav (Admin)", allowed: [] },
             "pankaj": { pass: "pass123", name: "Pankaj", allowed: ["hin"] },
-            "jayanti": { pass: "pass123", name: "Jayanti Dash", allowed: ["hin", "ss","eng"] },
+            "jayanti": { pass: "pass123", name: "Jayanti Dash", allowed: ["hin", "ss", "eng"] },
             "pamila": { pass: "pass123", name: "Pamila Yadav", allowed: ["disc"] },
             "khairunnisa": { pass: "pass123", name: "Khairunnisa Sayed", allowed: ["eng", "ss"] },
             "santoshi": { pass: "pass123", name: "Santoshi Padhi", allowed: ["eng"] },
@@ -375,15 +337,15 @@
             "binita": { pass: "pass123", name: "Binita Mohapatra", allowed: ["sci"] },
             "indika": { pass: "pass123", name: "Indika Arnakal", allowed: ["sci"] },
             "dhara": { pass: "pass123", name: "Dhara Vyas", allowed: ["sci", "math"] },
-            "vinay": { pass: "pass123", name: "Vinay Kumar Upadhyay", allowed: ["ss", "disc","unif"] },
-            "priyanka": { pass: "pass123", name: "Priyanka Redekar", allowed: ["ss","ict"] },
+            "vinay": { pass: "pass123", name: "Vinay Kumar Upadhyay", allowed: ["ss", "disc", "unif"] },
+            "priyanka": { pass: "pass123", name: "Priyanka Redekar", allowed: ["ss", "ict"] },
             "swati": { pass: "pass123", name: "Swati Khaire", allowed: ["mar"] },
             "dinesh": { pass: "pass123", name: "Dinesh Lagad", allowed: ["disc", "unif"] },
             "prasant": { pass: "pass123", name: "Prasant Kumar Pandey", allowed: ["disc", "unif"] },
             "vinod": { pass: "pass123", name: "Vinod Tapase", allowed: ["disc", "unif"] },
             "shruti": { pass: "pass123", name: "Shruti Saxena", allowed: ["ict"] },
-            "akshay": { pass: "pass123", name: "Akshay Kamble", allowed: ["dan"] },
-            "ashutosh": { pass: "pass123", name: "Ashutosh Thorat", allowed: ["dan"] },
+            "akshay": { pass: "pass123", name: "Akshay Kamble", allowed: ["dance"] },
+            "ashutosh": { pass: "pass123", name: "Ashutosh Thorat", allowed: ["dance"] },
             "anagha": { pass: "pass123", name: "Anagha Samudra", allowed: ["disc"] },
             "shalini": { pass: "pass123", name: "Shalini Pandey", allowed: ["disc"] },
             "mamta": { pass: "pass123", name: "Mamta Yadav", allowed: ["sci"] },
@@ -397,32 +359,25 @@
         let feedback = {};
 
         const defaultStudents = [
+            // Blue House
             { name: "AARAV KAMLESH GAUD", std: "I", house: "Blue" },
             { name: "ANVIT NILESH RANE", std: "I", house: "Blue" },
             { name: "DIKSHA AMIT CHATURVEDI", std: "I", house: "Blue" },
-            { name: "Daksh Anil Parkhe", std: "I", house: "Blue" },
-            { name: "Hansika Ajit Paswan", std: "I", house: "Blue" },
-            { name: "Hrutvi Patil", std: "I", house: "Blue" },
             { name: "JAI PRATAP SINGH", std: "I", house: "Blue" },
             { name: "KRISHN MAHINDRA JAIN", std: "I", house: "Blue" },
             { name: "MAYANK KIRAN KALE", std: "I", house: "Blue" },
             { name: "NIHARIKA DEVIPRASAD MISHRA", std: "I", house: "Blue" },
-            { name: "OM DEVEESARAN YADAV", "std": "I", house: "Blue" },
+            { name: "OM DEVEESARAN YADAV", std: "I", house: "Blue" },
             { name: "PULKIT KULDEEP MISHRA", std: "I", house: "Blue" },
             { name: "RIDHIKA VIJAY GUPTA", std: "I", house: "Blue" },
             { name: "RIVAN KUMAR", std: "I", house: "Blue" },
-            { name: "RAMRAJ   AJAY     AMBEKAR", std: "I", house: "Blue" },
-            { name: "SARTHAK   SUNIL     JAISWAL", std: "I", house: "Blue" },
             { name: "VAIDEHI DATTU PATIL", std: "I", house: "Blue" },
-            { name: "Vishakha Gautam Sabane", std: "I", house: "Blue" },
-            { name: "Viyan Bhati", std: "I", house: "Blue" },
             { name: "AAKARSHI SAXENA", std: "II", house: "Blue" },
             { name: "ADVIK PRITAM PAWAR", std: "II", house: "Blue" },
             { name: "AMIT SHYAM FADTALE", std: "II", house: "Blue" },
             { name: "ANSH ASHOK CHOUDHARY", std: "II", house: "Blue" },
             { name: "ANVI SAMIR HANDE", std: "II", house: "Blue" },
             { name: "ASHVIN SARVAN KUMAR DEWASI", std: "II", house: "Blue" },
-            { name: "Aasta Parmar", std: "II", house: "Blue" },
             { name: "DNYANAVI SUSHANT NAWALE", std: "II", house: "Blue" },
             { name: "DURVESH SATISH GAYKAR", std: "II", house: "Blue" },
             { name: "KARTIK SANDIP PATIL", std: "II", house: "Blue" },
@@ -456,85 +411,90 @@
             { name: "VIHAN BHASKAR GADEKAR", std: "III", house: "Blue" },
             { name: "AARADHYA NILESH JADHAV", std: "IV", house: "Blue" },
             { name: "ANVI AVINASH MENDHE", std: "IV", house: "Blue" },
-            { name: "ARYAN DHARMENDRA PARMAR", std: "IV", house: "Blue" },
+            { name: "ARYAN PARMAR", std: "IV", house: "Blue" },
             { name: "HITIKA MANOJ CHOUDHARY", std: "IV", house: "Blue" },
             { name: "MANN KASHYAP", std: "IV", house: "Blue" },
             { name: "MHASKE URMI APPASAHEB", std: "IV", house: "Blue" },
             { name: "OM ANUP TRIPATHI", std: "IV", house: "Blue" },
-            { name: "SHIVANSH MAHESH DAWANGE", std: "IV", house: "Blue" },
+            { name: "SHIVANSH DAWANGE", std: "IV", house: "Blue" },
             { name: "VEDANSH SUBHASH YADAV", std: "IV", house: "Blue" },
+            { name: "ANSHU LALMAN CHOUDHARY", std: "IX", house: "Blue" },
+            { name: "DEVANSH JITENDRA SHARMA", std: "IX", house: "Blue" },
+            { name: "KAVITA LAXMANLAL GURJAR", std: "IX", house: "Blue" },
+            { name: "SAPNA RAMMILAN HARIJAN", std: "IX", house: "Blue" },
             { name: "AAROHI ASHISH AWCHAR", std: "V", house: "Blue" },
-            { name: "ALOK BIPIN YADAV", std: "V", "house": "Blue" },
-            { name: "Ansh Baitta", std: "V", house: "Blue" },
+            { name: "ALOK BIPIN YADAV", std: "V", house: "Blue" },
             { name: "ATHARVA BALWANT GUPTA", std: "V", house: "Blue" },
             { name: "GUNJAN KANWAR", std: "V", house: "Blue" },
             { name: "JIYAN GANESH PATIL", std: "V", house: "Blue" },
             { name: "NIRVIGHNA PANDEY", std: "V", house: "Blue" },
-            { name: "Riya Gaikwad", std: "V", house: "Blue" },
             { name: "SAMARTH BHATTI", std: "V", house: "Blue" },
-            { name: "SHUBHRA SHAILESH WAGHADE", std: "V", house: "Blue" },
-            { name: "Swara Rathod", std: "V", house: "Blue" },
+            { name: "SHUBHRA WAGHADE", std: "V", house: "Blue" },
+            { name: "SWARA RATHOD", std: "V", house: "Blue" },
             { name: "VIHAAN AJAY GUPTA", std: "V", house: "Blue" },
             { name: "AAYUSHI ROY", std: "VI", house: "Blue" },
             { name: "ADVAITH VAIDYANATH", std: "VI", house: "Blue" },
-            { name: "Aastha Bhati", std: "VI", house: "Blue" },
-            { name: "DEVANSH DHARAMCHAND SUTAR", std: "VI", house: "Blue" },
+            { name: "DEVANSH SUTAR", std: "VI", house: "Blue" },
             { name: "JAZZLEEN KAUR NAVEET VAID", std: "VI", house: "Blue" },
             { name: "PRITHVI PAVAN RAUT", std: "VI", house: "Blue" },
-            { name: "Rishi Karande", std: "VI", house: "Blue" },
-            { name: "S. SIVAKRISH", std: "VI", house: "Blue" },
+            { name: "S. SIVA KRISH", std: "VI", house: "Blue" },
             { name: "VIHANA SAINATH PATIL", std: "VI", house: "Blue" },
             { name: "AAYUSH JAGDISH PATIL", std: "VII", house: "Blue" },
             { name: "ANSHU KAMLESH GAUD", std: "VII", house: "Blue" },
             { name: "BHAVYA SINGH", std: "VII", house: "Blue" },
             { name: "INAAYA HOSSAIN", std: "VII", house: "Blue" },
             { name: "MAHESH SANDEEP DIVATE", std: "VII", house: "Blue" },
-            { name: "Naman Patil", std: "VII", house: "Blue" },
+            { name: "NAMAN PATIL", std: "VII", house: "Blue" },
             { name: "PRATHAM MAHESH SHETTY", std: "VII", house: "Blue" },
             { name: "RUDRA SAMEER BERDE", std: "VII", house: "Blue" },
             { name: "SOHAM DEBKUMAR PAUL", std: "VII", house: "Blue" },
-            { name: "Satyam Yadav", std: "VII", house: "Blue" },
             { name: "TASHI MAHESH SHETTY", std: "VII", house: "Blue" },
             { name: "AARAV VIJAY SINGH", std: "VIII", house: "Blue" },
             { name: "ANVI PANDEY", std: "VIII", house: "Blue" },
             { name: "DURVA SACHIN CHAVAN", std: "VIII", house: "Blue" },
-            { name: "JAGRUTI ANIL GAUTAM", std: "VIII", house: "Blue" },
             { name: "KARAN KUNAL JOSHI", std: "VIII", house: "Blue" },
             { name: "MAYANK KUMAR", std: "VIII", house: "Blue" },
             { name: "RAKSHITA SAGAR GAIKWAD", std: "VIII", house: "Blue" },
-            { name: "SAKSHI DHARMENDRA PANDEY", std: "VIII", house: "Blue" },
+            { name: "SAKSHI PANDEY", std: "VIII", house: "Blue" },
             { name: "TANISHQ VISHAL PATIL", std: "VIII", house: "Blue" },
-            { name: "ANSHU LALMAN CHOUDHARY", std: "IX", house: "Blue" },
-            { name: "DEVANSH JITENDRA SHARMA", std: "IX", "house": "Blue" },
-            { name: "KAVITA LAXMANLAL GURJAR", std: "IX", house: "Blue" },
-            { name: "RUDRA DIVEKAR", std: "IX", house: "Blue" },
-            { name: "SAPNA RAMMILAN HARIJAN", std: "IX", house: "Blue" },
             { name: "ALOK YOGESH AGRAWAL", std: "X", house: "Blue" },
             { name: "ASHWI GIRISH PANDEY", std: "X", house: "Blue" },
-            { name: "GANESH SANJAY VISHWAKARMA", std: "X", house: "Blue" },
+            { name: "GANESH VISHWAKARMA", std: "X", house: "Blue" },
             { name: "JANVI RAMESH HEGDE", std: "X", house: "Blue" },
             { name: "NIDHI JAYWANT KHAIRE", std: "X", house: "Blue" },
             { name: "SALONI JOGENDAR PAL", std: "X", house: "Blue" },
             { name: "SHIVRAJ BHUSHAN NAWALE", std: "X", house: "Blue" },
             { name: "VIHAAN", std: "X", house: "Blue" },
+            { name: "AASTHA BHATTI", std: "VI", house: "Blue" },
+            { name: "RUDRA DIVEKAR", std: "IX", house: "Blue" },
+            { name: "SARTHAK SUNIL JAISWAL", std: "I", house: "Blue" },
+            { name: "DAKSH ANIL PARKHE", std: "I", house: "Blue" },
+            { name: "HANSIKA AJIT PASWAN", std: "I", house: "Blue" },
+            { name: "RAMRAJ AJAY AMBEKAR", std: "I", house: "Blue" },
+            { name: "VISHAKHA GAUTAM SABANE", std: "I", house: "Blue" },
+            { name: "VIYAN BHATI", std: "I", house: "Blue" },
+            { name: "HRUTVI PATIL", std: "I", house: "Blue" },
+            { name: "AASTA PARMAR", std: "II", house: "Blue" },
+            { name: "ARSH BAITTA", std: "V", house: "Blue" },
+            { name: "RISHI KARANDE", std: "VI", house: "Blue" },
+            { name: "SATYAM YADAV", std: "VII", house: "Blue" },
+
+            // Green House
             { name: "AASHWI JAGDISH PATIL", std: "I", house: "Green" },
-            { name: "ADVIT   SAGAR     SHINGAN", std: "I", house: "Green" },
-            { name: "Adarsh Jadhav", std: "I", house: "Green" },
-            { name: "Advit Shingan", std: "I", house: "Green" },
-            { name: "BHAVYA HIMMAT SINGH RAJPUT", std: "I", house: "Green" },
-            { name: "DEVANSH MORE", "std": "I", house: "Green" },
-            { name: "DURVA GANESH SHINDE", "std": "I", house: "Green" },
-            { name: "Devansh Jagdish Dhobale", std: "I", house: "Green" },
-            { name: "Devansh More", std: "I", house: "Green" },
-            { name: "Dhruvansh Patil", std: "I", house: "Green" },
-            { name: "KESHAV MANDARE", std: "I", house: "Green" },
+            { name: "ADARSH JADHAV", std: "I", house: "Green" },
+            { name: "ADV IT SAGAR SHINGAN", std: "I", house: "Green" },
+            { name: "BHAVYA RAJPUT", std: "I", house: "Green" },
+            { name: "DEVANSH JAGDISH DHOBALE", std: "I", house: "Green" },
+            { name: "DEVANSH MORE", std: "I", house: "Green" },
+            { name: "DURVA GANESH SHINDE", std: "I", house: "Green" },
+            { name: "KADAMBARI VISHWAS CHAVAN", std: "I", house: "Green" },
+            { name: "KESHA MANDARE", std: "I", house: "Green" },
             { name: "KRISHNA DALPAT KUMHAVAT", std: "I", house: "Green" },
-            { name: "Kadambari Vishwas Chavan", std: "I", house: "Green" },
             { name: "NIVAAN SATISH DAMA", std: "I", house: "Green" },
-            { name: "Priyank Rahul Kene", std: "I", house: "Green" },
+            { name: "PRIYANK RAHUL KENE", std: "I", house: "Green" },
             { name: "RAGHAV NILESH AROTE", std: "I", house: "Green" },
-            { name: "Riyansh Walmik Mhatre", std: "I", house: "Green" },
-            { name: "Rudraraj Kadam", std: "I", house: "Green" },
+            { name: "RIYANSH WALMIK MHATRE", std: "I", house: "Green" },
+            { name: "RUDRARAJ KADAM", std: "I", house: "Green" },
             { name: "SHRAVANI BHARAT SALGAR", std: "I", house: "Green" },
             { name: "VEDANSH VARUN SINGH", std: "I", house: "Green" },
             { name: "VIRAJ VAIBHAV", std: "I", house: "Green" },
@@ -544,19 +504,18 @@
             { name: "ANVAY AVINASH MENDHE", std: "II", house: "Green" },
             { name: "ARNAVI NARENDRA PATIL", std: "II", house: "Green" },
             { name: "BHAGYASHA NITIN MAHIRE", std: "II", house: "Green" },
-            { name: "Dishank Patil", std: "II", house: "Green" },
             { name: "HARSH DEVRAM GAWANDE", std: "II", house: "Green" },
             { name: "JIJA RAVINDRA ZEPALE", std: "II", house: "Green" },
             { name: "KRUSHNALI DIPAK HEROLE", std: "II", house: "Green" },
             { name: "MALHAR BHAGWAN AVHAD", std: "II", house: "Green" },
             { name: "PRADOSH SUMIT BHASKAR", std: "II", house: "Green" },
-            { name: "PRIVISHA VISHAL GAYKAR", std: "II", house: "Green" },
-            { name: "Prateek Yadav", std: "II", house: "Green" },
+            { name: "PRMISHA VISHAL GAYKAR", std: "II", house: "Green" },
             { name: "RUCHIT PURI GOSWAMI", std: "II", house: "Green" },
             { name: "SHIVAAY ROSHAN PATIL", std: "II", house: "Green" },
             { name: "SHIVAM RAHUL KANADE", std: "II", house: "Green" },
             { name: "SWARA VINAYAK KHODASE", std: "II", house: "Green" },
             { name: "YASHO SANTOSH VARAL", std: "II", house: "Green" },
+            { name: "DISHANK PATIL", std: "II", house: "Green" },
             { name: "AARADHYA SHIVDAS PATIL", std: "III", house: "Green" },
             { name: "ABHIJIT LAKHANKUMAR MAHTO", std: "III", house: "Green" },
             { name: "ADITI VIVEK SHARMA", std: "III", house: "Green" },
@@ -570,12 +529,11 @@
             { name: "NISHCHAL KIRAN PATIL", std: "III", house: "Green" },
             { name: "PRINCE SUNIL YADAV", std: "III", house: "Green" },
             { name: "SAMARTHA KIRAN KALE", std: "III", house: "Green" },
-            { name: "SWARAJ YOGESH MHATRE", std: "III", "house": "Green" },
+            { name: "SWARAJ YOGESH MHATRE", std: "III", house: "Green" },
             { name: "VIRAJ RAJESH MISHRA", std: "III", house: "Green" },
             { name: "YASH MAHENDRA JAIN", std: "III", house: "Green" },
             { name: "AARAVI RAVI SINGH", std: "IV", house: "Green" },
             { name: "ARNAVI SAINATH PATIL", std: "IV", house: "Green" },
-            { name: "BHAKTI RAHATE", std: "IV", house: "Green" },
             { name: "BHUMI RATNESHWAR SHUKLA", std: "IV", house: "Green" },
             { name: "KAAVYA KASHYAP", std: "IV", house: "Green" },
             { name: "MANSI SHAMBHU LAL JAT", std: "IV", house: "Green" },
@@ -583,211 +541,215 @@
             { name: "PRIYANSHI PAVAN TIWARI", std: "IV", house: "Green" },
             { name: "SHLOK PANKAJ BAWNE", std: "IV", house: "Green" },
             { name: "VIRAAJ MAHESH DATILKAR", std: "IV", house: "Green" },
-            { name: "ABHI  VAISHYA", std: "V", house: "Green" },
+            { name: "AMAN JITENDRA GOSWAMI", std: "IX", house: "Green" },
+            { name: "ATHRAW VINOD SONWANE", std: "IX", house: "Green" },
+            { name: "KETAN RAVINDRA PRAJAPATI", std: "IX", house: "Green" },
+            { name: "SARTHAK ARUN JADHAV", std: "IX", house: "Green" },
+            { name: "ABHI VAISHYA", std: "V", house: "Green" },
             { name: "ANUPRIYA SANJAYKUMAR GUPTA", std: "V", house: "Green" },
-            { name: "BHAIRAV MAHENDRA JAIN", "std": "V", house: "Green" },
+            { name: "BHAIRAV MAHENDRA JAIN", std: "V", house: "Green" },
             { name: "ISHANI SINGH", std: "V", house: "Green" },
             { name: "KARTIK DATTA BHAGAT", std: "V", house: "Green" },
-            { name: "MANVEER CHUMBALKAR", std: "V", house: "Green" },
             { name: "NIYATI SATISH GAYKAR", std: "V", house: "Green" },
             { name: "SAMIKSHA TIRUPATI AVADUT", std: "V", house: "Green" },
             { name: "SRUSHTI PRASHANT PHADNIS", std: "V", house: "Green" },
-            { name: "Shaurya Pratap", std: "V", house: "Green" },
             { name: "VIVAAN AJAY GUPTA", std: "V", house: "Green" },
+            { name: "MANVEER CHUMBALKAR", std: "V", house: "Green" },
+            { name: "AARYA PATIL", std: "VI", house: "Green" },
             { name: "AARADHYA RAHUL PAWAR", std: "VI", house: "Green" },
-            { name: "ADITYA SINGH", std: "VI", house: "Green" },
-            { name: "ANSHIKA SANJAYKUMAR GUPTA", std: "VI", house: "Green" },
-            { name: "Aarya patil", std: "VI", house: "Green" },
-            { name: "DHRUVI RAVI SINGH", std: "VI", house: "Green" },
-            { name: "HARDIK PANDEY", std: "VI", house: "Green" },
-            { name: "JINAL DNYANESHWAR PATIL", std: "VI", house: "Green" },
-            { name: "Kanu", std: "VI", house: "Green" },
             { name: "RADHIKA RAMSURAT MISHRA", std: "VI", house: "Green" },
+            { name: "ANSHIKA SANJAYKUMAR GUPTA", std: "VI", house: "Green" },
+            { name: "DHRUVI RAVI SINGH", std: "VI", house: "Green" },
+            { name: "JINAL DNYANESHWAR PATIL", std: "VI", house: "Green" },
             { name: "SHIVI SAXENA", std: "VI", house: "Green" },
             { name: "TEJAS YOGESH KHAIRNAR", std: "VI", house: "Green" },
             { name: "YASHIKA SHARMA", std: "VI", house: "Green" },
-            { name: "AARADHY DYANDEV KOLI", std: "VII", house: "Green" },
-            { name: "DIVYA KISHANSINGH CHAUHAN", std: "VII", house: "Green" },
-            { name: "JANVI KISHANSINGH CHOUHAN", std: "VII", house: "Green" },
             { name: "MAYURESH PRAVIN MAHIRE", std: "VII", house: "Green" },
-            { name: "PRATIK PAL", std: "VII", house: "Green" },
-            { name: "RAJNANDINI   SAHURAJ     DIGGE", std: "VII", house: "Green" },
-            { name: "RUNMAYEE VIJAY MARATHE", std: "VII", house: "Green" },
-            { name: "SWARA SANDIP SHEWALE", std: "VII", house: "Green" },
-            { name: "VEERESH KUMARESH KALAL", std: "VII", house: "Green" },
-            { name: "ADITYA RAJKUMAR SINGH", std: "VIII", house: "Green" },
-            { name: "APOORV JWALITH BOMMI", std: "VIII", house: "Green" },
-            { name: "ARNAV KUMAR", std: "VIII", house: "Green" },
-            { name: "HARSHAL KRISHNA LADWA", std: "VIII", house: "Green" },
-            { name: "HIMANSHU KANHAIYALAL JANGID", std: "VIII", house: "Green" },
-            { name: "JIDNYASA NANDKISHOR PATIL", std: "VIII", house: "Green" },
-            { name: "KAUSHAL GANESH PATIL", std: "VIII", house: "Green" },
-            { name: "NADEESH MANTARAM KONAR", std: "VIII", house: "Green" },
-            { name: "RISHI GYANCHANDRA PAL", std: "VIII", house: "Green" },
+            { name: "UMM E HANI", std: "VI", house: "Green" },
+            { name: "AARADHY DYANDEV KOLI", std: "VII", house: "Green" },
+            { name: "AKRITI KUMARI", std: "VII", house: "Green" },
+            { name: "HARDIK PANDEY", std: "VI", house: "Green" },
+            { name: "DIVYANSHI VAISHYA", std: "VII", house: "Green" },
+            { name: "SWASTIK ASHOK SAHU", std: "VII", house: "Green" },
+            { name: "JASFER SAMPSON SASANI", std: "VII", house: "Green" },
+            { name: "MOHIT YATIN PALAV", std: "VII", house: "Green" },
+            { name: "PRISHA ANURA", std: "VII", house: "Green" },
+            { name: "SAKSHAM MALUSARE", std: "VII", house: "Green" },
+            { name: "YASH MAHESH DATILKAR", std: "VII", house: "Green" },
+            { name: "ANANT DUBEY", std: "VIII", house: "Green" },
+            { name: "ARYA DUBEY", std: "VIII", house: "Green" },
+            { name: "HIMANSHU JANGID", std: "VIII", house: "Green" },
+            { name: "KABIR YOGESH MHATRE", std: "VIII", house: "Green" },
+            { name: "KAVYA GANESH PAKKI", std: "VIII", house: "Green" },
+            { name: "NEHA YOGESH KUMAR", std: "VIII", house: "Green" },
             { name: "SAKSHAM KIRAN PATIL", std: "VIII", house: "Green" },
-            { name: "SHUBHAM SWAPNIL SAKALE", std: "VIII", house: "Green" },
-            { name: "Vihan Choudhari", std: "VIII", house: "Green" },
-            { name: "AAIRAH AZIM NALBAND", std: "IX", house: "Green" },
-            { name: "AMAN JITENDRA GOSWAMI", std: "IX", house: "Green" },
-            { name: "ATHRAW VINOD SONWANE", std: "IX", house: "Green" },
-            { name: "KETAN RAVINDRA PRAJAPATI", std: "IX", "house": "Green" },
-            { name: "SARTHAK ARUN JADHAV", std: "IX", house: "Green" },
-            { name: "ANUSHKA SWAPNIL SAKALE", std: "X", house: "Green" },
-            { name: "DAKSHATA MAHESH DATILKAR", std: "X", house: "Green" },
-            { name: "GOPIKA TARUN", std: "X", house: "Green" },
+            { name: "SNEHA SHREE GHADIA", std: "VIII", house: "Green" },
+            { name: "TAJASA MAHIRE", std: "VIII", house: "Green" },
+            { name: "ANUSHREE DAS", std: "X", house: "Green" },
+            { name: "DEVANSH BHANUSHALI", std: "X", house: "Green" },
             { name: "HIMANSHU PARMAR", std: "X", house: "Green" },
-            { name: "JYOTHIKHA M P", std: "X", house: "Green" },
-            { name: "OM PANKAJ BAWNE", std: "X", house: "Green" },
-            { name: "SAPNA RAMNATH GUPTA", std: "X", house: "Green" },
-            { name: "SHREENIDHI VINOD VISHWAKARMA", std: "X", house: "Green" },
+            { name: "MANU SHREYA SUNDARRAJ", std: "X", house: "Green" },
+            { name: "PAVANRAJ REVANNATH ROTE", std: "X", house: "Green" },
+            { name: "SHANVI MAHINDRA JAIN", std: "X", house: "Green" },
+            { name: "SONAM RAJESH MISHRA", std: "X", house: "Green" },
+            { name: "OM YADAV", std: "I", house: "Green" },
+            { name: "SHRADDHA GADADE", std: "I", house: "Green" },
+            { name: "ANIKA AWCHAR", std: "I", house: "Green" },
+            { name: "MOHIT YADAV", std: "I", house: "Green" },
+            { name: "HARLEEN BANGARE", std: "I", house: "Green" },
+            { name: "DIVIJA", std: "II", house: "Green" },
+            { name: "DHRUV PATIL", std: "III", house: "Green" },
+
+            // Red House
             { name: "ANUJ SACHIN KURHADKAR", std: "I", house: "Red" },
-            { name: "Anika Awchar", std: "I", house: "Red" },
-            { name: "Glory Dolas", std: "I", house: "Red" },
-            { name: "Harleen Bangare", std: "I", house: "Red" },
+            { name: "DAKSH ANIL PARKHE", std: "I", house: "Red" },
+            { name: "GLORY DOLAS", std: "I", house: "Red" },
             { name: "JISHA DINESH PATIL", std: "I", house: "Red" },
             { name: "LAVANYA PRASHANT RAUT", std: "I", house: "Red" },
-            { name: "LIKHITA CHANDANA GURRAM", std: "I", house: "Red" },
-            { name: "Mohit Yadav", std: "I", house: "Red" },
-            { name: "Niharika Deviprasad Mishra", std: "I", house: "Red" },
-            { name: "Om Yadav", std: "I", house: "Red" },
+            { name: "LIKHITA GURRAM", std: "I", house: "Red" },
+            { name: "NIHARIKA DEVIPRASAD MISHRA", std: "I", house: "Red" },
             { name: "PRAGYA RAJAN SHUKLA", std: "I", house: "Red" },
-            { name: "Priyansh Bajagire", std: "I", house: "Red" },
-            { name: "RAJESHWARI NITIN THOMBARE", std: "I", house: "Red" },
-            { name: "SHRADDHA GADADE", std: "I", house: "Red" },
-            { name: "Shreeja Jadhav", std: "I", house: "Red" },
-            { name: "Shreya Rajendra Sutar", std: "I", house: "Red" },
-            { name: "Shrisha Sandeep Chandanshive", std: "I", house: "Red" },
-            { name: "Vedansh Singh", std: "I", house: "Red" },
-            { name: "Vidhi Pradeep Pandey", std: "I", house: "Red" },
-            { name: "YUG   CHAKRAVATI     PATIL", std: "I", house: "Red" },
+            { name: "PRAYA SAGAR BANDICHODE", std: "I", house: "Red" },
+            { name: "RAJESHWARI THOMBARE", std: "I", house: "Red" },
+            { name: "SHREEJA JADHAV", std: "I", house: "Red" },
+            { name: "SHREYA RAJENDRA SUTAR", std: "I", house: "Red" },
+            { name: "SHRISHA CHANDANSHIVE", std: "I", house: "Red" },
+            { name: "VEDANSH SINGH", std: "I", house: "Red" },
+            { name: "VIDHI PRADEEP PANDEY", std: "I", house: "Red" },
+            { name: "YUG CHAKRAVATI PATIL", std: "I", house: "Red" },
             { name: "YUVIKA NAGENDER PAL", std: "I", house: "Red" },
             { name: "AARYA PRITAM PATIL", std: "II", house: "Red" },
-            { name: "AMAIRA VISHAL KUMAR GUPTA", std: "II", house: "Red" },
+            { name: "AMAIRA GUPTA", std: "II", house: "Red" },
             { name: "AROHI AMOL GAIKWAD", std: "II", house: "Red" },
             { name: "CHINMAY VIJAY PAWAR", std: "II", house: "Red" },
             { name: "DEVANSH NITIN PAWAR", std: "II", house: "Red" },
-            { name: "Divija", std: "II", house: "Red" },
             { name: "JAYDITYA YOGESH KUMAR", std: "II", house: "Red" },
             { name: "KARTIK PANDURANG ZINGE", std: "II", house: "Red" },
             { name: "KUNJ KISHAN MHATRE", std: "II", house: "Red" },
             { name: "MANYATA MANOJ PAWSHE", std: "II", house: "Red" },
             { name: "PRIYANSH PRITAM PAWAR", std: "II", house: "Red" },
             { name: "RUHI SHIVKUMAR JAISWAL", std: "II", house: "Red" },
-            { name: "SHIVANSH DAYANAND WAGARE", std: "II", house: "Red" },
+            { name: "SHIVANSH WAGARE", std: "II", house: "Red" },
             { name: "TANMAY YADAV", std: "II", house: "Red" },
             { name: "TRISHA RAHUL PAWAR", std: "II", house: "Red" },
             { name: "YUVAAN SUSHANT KATKAR", std: "II", house: "Red" },
             { name: "AARADHYABA WAGHELA", std: "III", house: "Red" },
-            { name: "ABHINAV OM NARAYAN PANDEY", std: "III", house: "Red" },
-            { name: "AGRIMA", std: "III", house: "Red" },
+            { name: "ABHINAV PANDEY", std: "III", house: "Red" },
             { name: "ANIKA ANUP TRIPATHI", std: "III", house: "Red" },
-            { name: "BHAVARTH GURUNATH PATIL", std: "III", house: "Red" },
+            { name: "BHAVARTH PATIL", std: "III", house: "Red" },
             { name: "BHUMIKA VIJAY GUPTA", std: "III", house: "Red" },
-            { name: "Dhruv Patil", std: "III", house: "Red" },
-            { name: "GAURAV ASHOK CHOUDHARY", std: "III", house: "Red" },
+            { name: "GAURAV CHOUDHARY", std: "III", house: "Red" },
             { name: "HAMDAN SHAKEEL SHAIKH", std: "III", house: "Red" },
+            { name: "AGRIMA", std: "III", house: "Red" },
             { name: "KUMARI ANNANYA", std: "III", house: "Red" },
-            { name: "MAYANK LAXMANLAL GURJAR", std: "III", house: "Red" },
+            { name: "MAYANK GURJAR", std: "III", house: "Red" },
             { name: "PRISHA PRAMOD YADAV", std: "III", house: "Red" },
             { name: "SANSKAR TRIPATHI", std: "III", house: "Red" },
-            { name: "SARVANGI DILKUSH MHATRE", std: "III", house: "Red" },
-            { name: "Smit Patil", std: "III", house: "Red" },
+            { name: "SARVANGI MHATRE", std: "III", house: "Red" },
             { name: "TANMAY NITEEN ZADE", std: "III", house: "Red" },
             { name: "YOG RUPESH PATIL", std: "III", house: "Red" },
+            { name: "SMIT PATIL", std: "III", house: "Red" },
             { name: "AMAY YADAV", std: "IV", house: "Red" },
             { name: "ARNAVI SANJAY MAHADIK", std: "IV", house: "Red" },
-            { name: "DEVYANKA SANDEEP GAIKWAD", std: "IV", house: "Red" },
+            { name: "DEVYANKA GAIKWAD", std: "IV", house: "Red" },
             { name: "KASTURI SANDIP PATIL", std: "IV", house: "Red" },
             { name: "MANSWI ADHIK MANE", std: "IV", house: "Red" },
             { name: "MONALI", std: "IV", house: "Red" },
-            { name: "SAANVI KUMARI", "std": "IV", house: "Red" },
+            { name: "SAANVI KUMARI", std: "IV", house: "Red" },
             { name: "SHUBHAM KRISHNA SAHOO", std: "IV", house: "Red" },
             { name: "VISHNU PARTHIBHAN", std: "IV", house: "Red" },
-            { name: "ABHINAV KUMAR", std: "V", house: "Red" },
-            { name: "AKSHAT RAJKUMAR VARMA", std: "V", house: "Red" },
-            { name: "ANURAG KUMAR", std: "V", house: "Red" },
-            { name: "DEVANSHI TRIPATHI", std: "V", house: "Red" },
-            { name: "ISHWARI ARUN BIRAJDAR", std: "V", house: "Red" },
-            { name: "MANAS KURHADKAR", std: "V", house: "Red" },
-            { name: "PIHU -", std: "V", house: "Red" },
-            { name: "SHRAVYA ANANDA PARTHE", std: "V", house: "Red" },
-            { name: "Taruna Rajput", std: "V", house: "Red" },
-            { name: "VEDANT HEMARAM CHOUDHARI", std: "V", house: "Red" },
-            { name: "YASH SHAH", std: "V", house: "Red" },
-            { name: "YUG SINGH", std: "V", house: "Red" },
-            { name: "AAROHI GANESH PATIL", std: "VI", house: "Red" },
-            { name: "ADITYA LALMAN CHOUDHARY", std: "VI", house: "Red" },
-            { name: "ARJUN BHATTALWAR", std: "VI", house: "Red" },
-            { name: "HETH SUNIL NAKHUVA", std: "VI", house: "Red" },
-            { name: "JINISHA DNYANESHWAR PATIL", std: "VI", house: "Red" },
-            { name: "RITIK RAJNISH PAYASI", std: "VI", house: "Red" },
-            { name: "SHLOK SAGAR SALUNKHE", std: "VI", house: "Red" },
-            { name: "UMM E HANI", std: "VI", house: "Red" },
-            { name: "AARADHY DYANDEV KOLI", std: "VII", house: "Red" },
-            { name: "AKRITI KUMARI", std: "VII", house: "Red" },
-            { name: "DIVYANSHI VAISHYA", std: "VII", house: "Red" },
-            { name: "JASFER SAMPSON SASANI", std: "VII", house: "Red" },
-            { name: "MOHIT YATIN PALAV", std: "VII", house: "Red" },
-            { name: "PRISHA ANURA", std: "VII", house: "Red" },
-            { name: "SAKSHAM SANTOSH MALUSARE", std: "VII", house: "Red" },
-            { name: "SWASTIK ASHOK SAHU", std: "VII", house: "Red" },
-            { name: "YASH MAHESH DATILKAR", std: "VII", house: "Red" },
-            { name: "ANANT DUBEY", std: "VIII", house: "Red" },
-            { name: "ARYA DUBEY", std: "VIII", house: "Red" },
-            { name: "KAVYA GANESH PAKKI", std: "VIII", house: "Red" },
-            { name: "NEHA YOGESH KUMAR", std: "VIII", house: "Red" },
-            { name: "SAKSHAM KIRAN PATIL", std: "VIII", house: "Red" },
-            { name: "SNEHA SHREE GHADIA", std: "VIII", house: "Red" },
-            { name: "TAJASA MAHIRE", std: "VIII", house: "Red" },
             { name: "AAYAAN HARDIK GALA", std: "IX", house: "Red" },
             { name: "GARGI MAHESH DAWANGE", std: "IX", house: "Red" },
             { name: "NIVEDITA NEERAJ DUBEY", std: "IX", house: "Red" },
             { name: "VINAYAK VIJAY GUPTA", std: "IX", house: "Red" },
-            { name: "ANUSHREE DAS", std: "X", house: "Red" },
-            { name: "DEVANSH BHANUSHALI", std: "X", house: "Red" },
-            { name: "MANU SHREYA SUNDARRAJ", std: "X", house: "Red" },
-            { name: "PAVANRAJ REVANNATH ROTE", std: "X", house: "Red" },
-            { name: "SHANVI MAHINDRA JAIN", std: "X", house: "Red" },
-            { name: "SONAM RAJESH MISHRA", std: "X", "house": "Red" },
+            { name: "ABHINAV KUMAR", std: "V", house: "Red" },
+            { name: "AKSHAT VARMA", std: "V", house: "Red" },
+            { name: "ANURAG KUMAR", std: "V", house: "Red" },
+            { name: "DEVANSHI TRIPATHI", std: "V", house: "Red" },
+            { name: "ISHWARI ARUN BIRAJDAR", std: "V", house: "Red" },
+            { name: "MANAS KURHADKAR", std: "V", house: "Red" },
+            { name: "YUG SINGH", std: "V", house: "Red" },
+            { name: "PIHU -", std: "V", house: "Red" },
+            { name: "SHRAVYA ANANDA PARTHE", std: "V", house: "Red" },
+            { name: "VEDANT CHOUDHARI", std: "V", house: "Red" },
+            { name: "YASH SHAH", std: "V", house: "Red" },
+            { name: "TARUNA RAJPUT", std: "V", house: "Red" },
+            { name: "AAROHI GANESH PATIL", std: "VI", house: "Red" },
+            { name: "ADITYA CHOUDHARY", std: "VI", house: "Red" },
+            { name: "ARJUN BHATTALWAR", std: "VI", house: "Red" },
+            { name: "HETH SUNIL NAKHUVA", std: "VI", house: "Red" },
+            { name: "JINISHA PATIL", std: "VI", house: "Red" },
+            { name: "RITIK RAJNISH PAYASI", std: "VI", house: "Red" },
+            { name: "SHLOK SAGAR SALUNKHE", std: "VI", house: "Red" },
+            { name: "PRATIK PAL", std: "VII", house: "Red" },
+            { name: "APOORV JWALITH BOMMI", std: "VII", house: "Red" },
+            { name: "DIVYA KISHANSINGH CHAUHAN", std: "VII", house: "Red" },
+            { name: "JANVI KISHANSINGH CHOUHAN", std: "VII", house: "Red" },
+            { name: "RUNMAYEE VIJAY MARATHE", std: "VII", house: "Red" },
+            { name: "SWARA SANDIP SHEWALE", std: "VII", house: "Red" },
+            { name: "VEERESH KUMARESH KALAL", std: "VII", house: "Red" },
+            { name: "RAJNANDINI SAHURAJ DIGGE", std: "VII", house: "Red" },
+            { name: "ADITYA RAJKUMAR SINGH", std: "VIII", house: "Red" },
+            { name: "ARNAV KUMAR", std: "VIII", house: "Red" },
+            { name: "HARSHAL KRISHNA LADWA", std: "VIII", house: "Red" },
+            { name: "JIDNYASA NANDKISHOR PATIL", std: "VIII", house: "Red" },
+            { name: "KAUSHAL GANESH PATIL", std: "VIII", house: "Red" },
+            { name: "NADEESH MANTARAM KONAR", std: "VIII", house: "Red" },
+            { name: "RISHI GYANCHANDRA PAL", std: "VIII", house: "Red" },
+            { name: "SHUBHAM SWAPNIL SAKALE", std: "VIII", house: "Red" },
+            { name: "VIHAN CHOUDHARI", std: "VIII", house: "Red" },
+            { name: "ANUSHKA SWAPNIL SAKALE", std: "X", house: "Red" },
+            { name: "DAKSHATA MAHESH DATILKAR", std: "X", house: "Red" },
+            { name: "GOPIKA TARUN", std: "X", house: "Red" },
+            { name: "JYOTHIKA M P", std: "X", house: "Red" },
+            { name: "OM PANKAJ BAWNE", std: "X", house: "Red" },
+            { name: "SAPNA RAMNATH GUPTA", std: "X", house: "Red" },
+            { name: "SHREENIDHI VINOD VISHWAKARMA", std: "X", house: "Red" },
+            { name: "PRIYANSH BAJAGIRE", std: "I", house: "Red" },
+            { name: "ADVIT SHINGAN", std: "I", house: "Red" },
+            { name: "BHAKTI RAHATE", std: "IV", house: "Red" },
+            { name: "DHRUVANSH PATIL", std: "I", house: "Red" },
+            { name: "PRATEEK YADAV", std: "I", house: "Red" },
+            { name: "KANU", std: "IV", house: "Red" },
+            { name: "SHAURYA PRATAP", std: "V", house: "Red" },
+
+            // Yellow House
             { name: "AAI KUMARI", std: "I", house: "Yellow" },
-            { name: "ANGELINA ANTONY HILARY", std: "I", house: "Yellow" },
+            { name: "AARADHYA KULKARNI", std: "I", house: "Yellow" },
             { name: "ANUSHKA SINGH", std: "I", house: "Yellow" },
-            { name: "Aaradhya Kulkarni", std: "I", house: "Yellow" },
             { name: "DARSHANA DIPAK SAROJ", std: "I", house: "Yellow" },
-            { name: "Daksh Rathod", std: "I", house: "Yellow" },
-            { name: "Inaya Tadavi", std: "I", house: "Yellow" },
+            { name: "INAYA TADAVI", std: "I", house: "Yellow" },
             { name: "JIYANSH ANIL MHATRE", std: "I", house: "Yellow" },
-            { name: "MEERA   RAJPUROHIT", std: "I", house: "Yellow" },
-            { name: "NAITIK MAHENDRA SINGH RAWAL", std: "I", house: "Yellow" },
+            { name: "MEERA RAJPUROHIT", std: "I", house: "Yellow" },
+            { name: "NAITIK RAWAL", std: "I", house: "Yellow" },
             { name: "PRIYANSHI MANOJ SHINDE", std: "I", house: "Yellow" },
-            { name: "RAVINDRA KUMAR   DEWASI", std: "I", house: "Yellow" },
-            { name: "Rahul Lamkhade Aradhya", std: "I", house: "Yellow" },
-            { name: "Riddhi Ramdas Rahate", std: "I", house: "Yellow" },
-            { name: "Rishav Dubey", std: "I", house: "Yellow" },
-            { name: "SHIVANSH   SUDARSHAN     KHEDKAR", std: "I", house: "Yellow" },
-            { name: "SWARA DNYANESHWAR DESHMANE", std: "I", house: "Yellow" },
-            { name: "Samarth Jadhav", std: "I", house: "Yellow" },
-            { name: "Visshvesh Tushar Navale", std: "I", house: "Yellow" },
-            { name: "AADYA       CHAKRABORTY", std: "II", house: "Yellow" },
+            { name: "ARADHYA LAMKHADE", std: "I", house: "Yellow" },
+            { name: "RAVINDRA DEWASI", std: "I", house: "Yellow" },
+            { name: "RIDDHI RAMDAS RAHATE", std: "I", house: "Yellow" },
+            { name: "SAMARTH JADHAV", std: "I", house: "Yellow" },
+            { name: "SHIVANSH KHEDKAR", std: "I", house: "Yellow" },
+            { name: "SWARA DESHMANE", std: "I", house: "Yellow" },
+            { name: "VISSHVESH TUSHAR NAVALE", std: "I", house: "Yellow" },
             { name: "AAHAN VISHAL PATIL", std: "II", house: "Yellow" },
             { name: "ADHIRAJ SINGH", std: "II", house: "Yellow" },
+            { name: "ANGELINA HILARY", std: "II", house: "Yellow" },
             { name: "ARYAN PANDEY", std: "II", house: "Yellow" },
-            { name: "DEVANSH GANESH PAWAR", std: "II", house: "Yellow" },
+            { name: "DEVANSH PAWAR", std: "II", house: "Yellow" },
             { name: "DHRUV BHAGAT", std: "II", house: "Yellow" },
             { name: "K. MAHATHE", std: "II", house: "Yellow" },
             { name: "KUSHAL RAMBABU PANDEY", std: "II", house: "Yellow" },
             { name: "MOHIT SINGH RAJPUROHIT", std: "II", house: "Yellow" },
             { name: "MONIKA YOGESH PATIL", std: "II", house: "Yellow" },
-            { name: "PRIYANSHEE PARASHAR GARGARI", std: "II", house: "Yellow" },
+            { name: "PRIYANSHEE GARGARI", std: "II", house: "Yellow" },
             { name: "RUTVI UMESH DEVKAR", std: "II", house: "Yellow" },
-            { name: "SHIVANSH SANTOSH GAWANDE", std: "II", house: "Yellow" },
+            { name: "SHIVANSH GAWANDE", std: "II", house: "Yellow" },
             { name: "VEDIKA ATUL BADGUJAR", std: "II", house: "Yellow" },
             { name: "VINAYAK YADAV", std: "II", house: "Yellow" },
+            { name: "AADYA CHAKRABORTY", std: "II", house: "Yellow" },
             { name: "AAHAANA HARDIK GALA", std: "III", house: "Yellow" },
             { name: "AARYAN BHASKAR AROTE", std: "III", house: "Yellow" },
             { name: "ADVIK KUMAR", std: "III", house: "Yellow" },
             { name: "ANSHITA DYANDEV KOLI", std: "III", house: "Yellow" },
-            { name: "Adarsh Yadav", std: "III", house: "Yellow" },
             { name: "BUDDHANSH SURAJ JADHAV", std: "III", house: "Yellow" },
             { name: "CHHAVI TAYWADE", std: "III", house: "Yellow" },
             { name: "GURRAM CHANDRA", std: "III", house: "Yellow" },
@@ -799,19 +761,23 @@
             { name: "SRISHTI NEERAJ DUBEY", std: "III", house: "Yellow" },
             { name: "VIHAAN RAVINDRA SHINDE", std: "III", house: "Yellow" },
             { name: "ANVESH AMOL KARE", std: "IV", house: "Yellow" },
-            { name: "ARUNIMA OM NARAYAN PANDEY", std: "IV", house: "Yellow" },
+            { name: "ARUNIMA PANDEY", std: "IV", house: "Yellow" },
             { name: "GAURI TARUN", std: "IV", house: "Yellow" },
-            { name: "Ishwari Patange", std: "IV", house: "Yellow" },
             { name: "KRISHNA VIKAS SINGH", std: "IV", house: "Yellow" },
-            { name: "MANUSHRI RAJKUMAR MANKALA", std: "IV", house: "Yellow" },
+            { name: "MANUSHRI MANKALA", std: "IV", house: "Yellow" },
             { name: "NIKUNJ VILAS DHAGE", std: "IV", house: "Yellow" },
             { name: "SANISH SURAJ JADHAV", std: "IV", house: "Yellow" },
             { name: "VAIDIK SINGH", std: "IV", house: "Yellow" },
+            { name: "ISHWARI PATANGE", std: "IV", house: "Yellow" },
+            { name: "ANSH GYANCHANDRA PAL", std: "IX", house: "Yellow" },
+            { name: "JEET DATTATRAY VIRKAR", std: "IX", house: "Yellow" },
+            { name: "SAMARTH ABHAY JADHAV", std: "IX", house: "Yellow" },
+            { name: "YUG SINGH SENGAR", std: "IX", house: "Yellow" },
+            { name: "PRATAM MALI", std: "IX", house: "Yellow" },
             { name: "AANYA AASHISH SINHA", std: "V", house: "Yellow" },
             { name: "ADVIKA GANESH MUKHEKAR", std: "V", house: "Yellow" },
             { name: "ARADHYA KUMARI", std: "V", house: "Yellow" },
             { name: "DHAYAN NILESH BHANUSHALI", std: "V", house: "Yellow" },
-            { name: "Devansh Malik", std: "V", house: "Yellow" },
             { name: "ISHWARI ANIL DOMALE", std: "V", house: "Yellow" },
             { name: "NAMAN MANISH SRIVASTAV", std: "V", house: "Yellow" },
             { name: "REYANSH SAHA", std: "V", house: "Yellow" },
@@ -819,46 +785,44 @@
             { name: "VEDANT VIKAS CHOUDHARY", std: "V", house: "Yellow" },
             { name: "YUG DEVIDAS PATIL", std: "V", house: "Yellow" },
             { name: "AARYA SINGH", std: "VI", house: "Yellow" },
-            { name: "ADITYAKUMAR   MOHANTY", std: "VI", house: "Yellow" },
+            { name: "ADITYAKUMAR MOHANTY", std: "VI", house: "Yellow" },
+            { name: "SONALI -", std: "VI", house: "Yellow" },
             { name: "AVANIKA MAHESH FULSE", std: "VI", house: "Yellow" },
-            { name: "Charmi Bagul", std: "VI", house: "Yellow" },
             { name: "JAYDIP YOGESH GAGARE", std: "VI", house: "Yellow" },
             { name: "K. PRAGATHE", std: "VI", house: "Yellow" },
             { name: "RUTVIKA PRITAM PATIL", std: "VI", house: "Yellow" },
-            { name: "SONALI -", std: "VI", house: "Yellow" },
             { name: "VANSH YOGESH KUMAR", std: "VI", house: "Yellow" },
+            { name: "CHARMI BAGUL", std: "VI", house: "Yellow" },
             { name: "AAYUSH BALWANT GUPTA", std: "VII", house: "Yellow" },
             { name: "ANSH SANJAYKUMAR GUPTA", std: "VII", house: "Yellow" },
             { name: "AVIYANSH GUPTA", std: "VII", house: "Yellow" },
             { name: "GIA RAJVI SUNDARRAJ", std: "VII", house: "Yellow" },
             { name: "KIRTI LAXMAN GURJAR", std: "VII", house: "Yellow" },
             { name: "NANDINI BIPIN YADAV", std: "VII", house: "Yellow" },
-            { name: "RADHIKA DHARMENDRA PARMAR", std: "VII", house: "Yellow" },
-            { name: "SAMRUDDHI PRASHANT PHADNIS", std: "VII", house: "Yellow" },
-            { name: "Soham Rathod", std: "VII", house: "Yellow" },
+            { name: "RADHIKA PARMAR", std: "VII", house: "Yellow" },
+            { name: "SAMRUDDHI PHADNIS", std: "VII", house: "Yellow" },
             { name: "TANMAYEE VIJAY MARATHE", std: "VII", house: "Yellow" },
-            { name: "AARADHAYA ASHISH TRIPATHI", std: "VIII", house: "Yellow" },
+            { name: "SOHAM RATHOD", std: "VII", house: "Yellow" },
+            { name: "AARADHAYA TRIPATHI", std: "VIII", house: "Yellow" },
             { name: "ANURAG PRADEEP PANDEY", std: "VIII", house: "Yellow" },
             { name: "AVANI TUSHAR KAMBLE", std: "VIII", house: "Yellow" },
             { name: "ISHWARI MANDARE", std: "VIII", house: "Yellow" },
             { name: "KANISH GANESH PAKKI", std: "VIII", house: "Yellow" },
             { name: "KUSMITHA SRI BOMMI", std: "VIII", house: "Yellow" },
-            { name: "Khushi Dhongadi", std: "VIII", house: "Yellow" },
             { name: "NIRBHAY SANDESH PATIL", std: "VIII", house: "Yellow" },
             { name: "SAKSHAM SHAMBHULAL JAAT", std: "VIII", house: "Yellow" },
             { name: "SWARAJ REVANNATH ROTE", std: "VIII", house: "Yellow" },
-            { name: "ANSH GYANCHANDRA PAL", std: "IX", house: "Yellow" },
-            { name: "JEET DATTATRAY VIRKAR", std: "IX", house: "Yellow" },
-            { name: "Pratam Mali", std: "IX", house: "Yellow" },
-            { name: "SAMARTH ABHAY JADHAV", std: "IX", house: "Yellow" },
-            { name: "YUG SINGH SENGAR", std: "IX", house: "Yellow" },
             { name: "ARYAN SUMIT SAHU", std: "X", house: "Yellow" },
             { name: "DIPA DEBKUMAR PAUL", std: "X", house: "Yellow" },
             { name: "ISHAN MONU KUMAR BHATTI", std: "X", house: "Yellow" },
             { name: "MIHIKA YADAV", std: "X", house: "Yellow" },
-            { name: "PRIYA DURGESH KUMAR PATEL", std: "X", house: "Yellow" },
+            { name: "PRIYA PATEL", std: "X", house: "Yellow" },
             { name: "SHARDUL NILESH MORE", std: "X", house: "Yellow" },
-            { name: "TARANJEET SUNDEEP KHULLAR", std: "X", house: "Yellow" }
+            { name: "TARANJEET KHULLAR", std: "X", house: "Yellow" },
+            { name: "RISHAV DUBEY", std: "I", house: "Yellow" },
+            { name: "DAKSH RATHOD", std: "I", house: "Yellow" },
+            { name: "ADARSH YADAV", std: "III", house: "Yellow" },
+            { name: "KHUSHI DHONGADI", std: "VIII", house: "Yellow" }
         ];
 
         function handleLogin(e) {
@@ -878,7 +842,6 @@
                 } else {
                     document.getElementById('headerSubtitle').innerText = `Logged in as: ${currentTeacher.name} (Assigned Sections)`;
                 }
-
                 loadData();
             } else {
                 errorDiv.innerText = "Invalid Username or Password!";
@@ -907,7 +870,7 @@
                 populateStudentDropdown();
                 filterData();
             } catch (error) {
-                console.error("Error loading data from Google Sheets:", error);
+                console.error("Error loading data:", error);
                 students = [...defaultStudents];
                 scores = {};
                 feedback = {};
@@ -961,33 +924,34 @@
             });
         }
 
+        function calculateTotal(name) {
+            const s = scores[name] || {};
+            return (Number(s.disc) || 0) + (Number(s.unif) || 0) + (Number(s.hin) || 0) + 
+                   (Number(s.eng) || 0) + (Number(s.mar) || 0) + (Number(s.math) || 0) + 
+                   (Number(s.sci) || 0) + (Number(s.dance) || 0) + (Number(s.ict) || 0) + 
+                   (Number(s.lib) || 0) + (Number(s.ac) || 0) + (Number(s.ss) || 0);
+        }
+
         function renderTable(filterClass = "ALL", filterHouse = "ALL", searchQuery = "", selectedStudent = "") {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             let srNo = 1;
 
-            students.forEach((student, index) => {
+            students.forEach((student) => {
                 if (filterClass !== "ALL" && student.std !== filterClass) return;
                 if (filterHouse !== "ALL" && student.house !== filterHouse) return;
                 if (selectedStudent && student.name !== selectedStudent) return;
                 if (searchQuery && !student.name.toLowerCase().includes(searchQuery.toLowerCase())) return;
 
-                if (!scores[index]) {
-                    scores[index] = {
-                        disc: 0, unif: 0, hin: 0, eng: 0, mar: 0,
-                        math: 0, sci: 0, gk: 0, ict: 0, lib: 0, rob: 0, ss: 0
-                    };
+                if (!scores[student.name]) {
+                    scores[student.name] = { disc: 0, unif: 0, hin: 0, eng: 0, mar: 0, math: 0, sci: 0, dance: 0, ict: 0, lib: 0, ac: 0, ss: 0 };
+                }
+                if (!feedback[student.name]) {
+                    feedback[student.name] = {};
                 }
 
-                if (!feedback[index]) {
-                    feedback[index] = {};
-                }
-
-                const s = scores[index];
-                const total = Number(s.disc || 0) + Number(s.unif || 0) + Number(s.hin || 0) + 
-                              Number(s.eng || 0) + Number(s.mar || 0) + Number(s.math || 0) + 
-                              Number(s.sci || 0) + Number(s.gk || 0) + Number(s.ict || 0) + 
-                              Number(s.lib || 0) + Number(s.rob || 0) + Number(s.ss || 0);
+                const s = scores[student.name];
+                const total = calculateTotal(student.name);
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -995,37 +959,38 @@
                     <td class="student-name">${student.name}</td>
                     <td>${student.std}</td>
                     <td>${student.house}</td>
-                    ${createScoreAndFeedbackCell(index, 'disc', Number(s.disc) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'unif', Number(s.unif) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'hin', Number(s.hin) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'eng', Number(s.eng) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'mar', Number(s.mar) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'math', Number(s.math) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'sci', Number(s.sci) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'gk', Number(s.gk) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'ict', Number(s.ict) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'lib', Number(s.lib) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'rob', Number(s.rob) || 0)}
-                    ${createScoreAndFeedbackCell(index, 'ss', Number(s.ss) || 0)}
-                    <td class="total-cell" id="total-${index}">${total}</td>
+                    ${createScoreAndFeedbackCell(student.name, 'disc', Number(s.disc) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'unif', Number(s.unif) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'hin', Number(s.hin) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'eng', Number(s.eng) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'mar', Number(s.mar) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'math', Number(s.math) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'sci', Number(s.sci) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'dance', Number(s.dance) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'ict', Number(s.ict) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'lib', Number(s.lib) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'ac', Number(s.ac) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'ss', Number(s.ss) || 0)}
+                    <td class="total-cell" id="total-${CSS.escape(student.name)}">${total}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function createScoreAndFeedbackCell(index, field, value) {
+        function createScoreAndFeedbackCell(name, field, value) {
             const isAllowed = !currentTeacher || currentTeacher.allowed.length === 0 || currentTeacher.allowed.includes(field);
-            const currentFb = (feedback[index] && feedback[index][field]) || "";
+            const currentFb = (feedback[name] && feedback[name][field]) || "";
+            const safeId = name.replace(/[^a-zA-Z0-9]/g, '_');
 
             if (isAllowed) {
                 return `
                     <td>
                         <div style="margin-bottom: 4px;">
-                            <button class="point-btn" onclick="updatePoint(${index}, '${field}', -1)">-</button>
-                            <span id="${field}-${index}">${value}</span>
-                            <button class="point-btn" onclick="updatePoint(${index}, '${field}', 1)">+</button>
+                            <button class="point-btn" onclick="updatePoint('${name.replace(/'/g, "\\'")}', '${field}', -1)">-</button>
+                            <span id="${field}-${safeId}">${value}</span>
+                            <button class="point-btn" onclick="updatePoint('${name.replace(/'/g, "\\'")}', '${field}', 1)">+</button>
                         </div>
-                        <input type="text" class="feedback-input" id="fb-${index}-${field}" value="${currentFb}" placeholder="Remark..." onchange="updateCategoryFeedback(${index}, '${field}', this.value)">
+                        <input type="text" class="feedback-input" id="fb-${safeId}-${field}" value="${currentFb}" placeholder="Remark..." onchange="updateCategoryFeedback('${name.replace(/'/g, "\\'")}', '${field}', this.value)">
                     </td>
                 `;
             } else {
@@ -1033,7 +998,7 @@
                     <td>
                         <div style="margin-bottom: 4px;">
                             <button class="point-btn disabled" disabled>-</button>
-                            <span id="${field}-${index}" style="color: #94a3b8;">${value}</span>
+                            <span id="${field}-${safeId}" style="color: #94a3b8;">${value}</span>
                             <button class="point-btn disabled" disabled>+</button>
                         </div>
                         <div style="font-size: 10px; color: #64748b; font-style: italic;">${currentFb || '-'}</div>
@@ -1042,25 +1007,21 @@
             }
         }
 
-        async function updatePoint(index, field, change) {
+        async function updatePoint(name, field, change) {
             if (currentTeacher && currentTeacher.allowed.length > 0 && !currentTeacher.allowed.includes(field)) {
                 alert("Permission Denied: You cannot modify columns assigned to other teachers.");
                 return;
             }
 
-            const currentVal = Number(scores[index][field]) || 0;
+            if (!scores[name]) scores[name] = {};
+            const currentVal = Number(scores[name][field]) || 0;
             const newVal = currentVal + change;
 
             if (newVal >= 0 && newVal <= 5) {
-                scores[index][field] = newVal;
-                document.getElementById(`${field}-${index}`).innerText = newVal;
-
-                const s = scores[index];
-                const total = Number(s.disc || 0) + Number(s.unif || 0) + Number(s.hin || 0) + 
-                              Number(s.eng || 0) + Number(s.mar || 0) + Number(s.math || 0) + 
-                              Number(s.sci || 0) + Number(s.gk || 0) + Number(s.ict || 0) + 
-                              Number(s.lib || 0) + Number(s.rob || 0) + Number(s.ss || 0);
-                document.getElementById(`total-${index}`).innerText = total;
+                scores[name][field] = newVal;
+                const safeId = name.replace(/[^a-zA-Z0-9]/g, '_');
+                document.getElementById(`${field}-${safeId}`).innerText = newVal;
+                document.getElementById(`total-${CSS.escape(name)}`).innerText = calculateTotal(name);
 
                 await fetch(API_URL, {
                     method: "POST",
@@ -1069,9 +1030,9 @@
             }
         }
 
-        async function updateCategoryFeedback(index, field, value) {
-            if (!feedback[index]) feedback[index] = {};
-            feedback[index][field] = value;
+        async function updateCategoryFeedback(name, field, value) {
+            if (!feedback[name]) feedback[name] = {};
+            feedback[name][field] = value;
             await fetch(API_URL, {
                 method: "POST",
                 body: JSON.stringify({ action: "saveFeedback", feedback: feedback })
@@ -1097,6 +1058,10 @@
             });
             alert('Progress and category remarks successfully synced to Google Sheets!');
         }
+
+        window.onload = function() {
+            // Wait for login
+        };
     </script>
 </body>
 </html>
