@@ -268,7 +268,6 @@
     </div>
 
     <script>
-        // Replace with your Google Apps Script Web App URL
         const API_URL = "https://script.google.com/macros/s/AKfycbwCDZFMrAw05AgJzmpqbvfdmXDahfspjDUpG5F12KWULWdtnRwJZflc5IdnL_Src8Q6mA/exec";
 
         let students = [];
@@ -276,6 +275,7 @@
         let feedback = {};
 
         const defaultStudents = [
+            // Blue House
             { name: "AARAV KAMLESH GAUD", std: "I", house: "Blue" },
             { name: "ANVIT NILESH RANE", std: "I", house: "Blue" },
             { name: "DIKSHA AMIT CHATURVEDI", std: "I", house: "Blue" },
@@ -394,6 +394,8 @@
             { name: "ARSH BAITTA", std: "V", house: "Blue" },
             { name: "RISHI KARANDE", std: "VI", house: "Blue" },
             { name: "SATYAM YADAV", std: "VII", house: "Blue" },
+
+            // Green House
             { name: "AASHWI JAGDISH PATIL", std: "I", house: "Green" },
             { name: "ADARSH JADHAV", std: "I", house: "Green" },
             { name: "ADV IT SAGAR SHINGAN", std: "I", house: "Green" },
@@ -513,6 +515,8 @@
             { name: "HARLEEN BANGARE", std: "I", house: "Green" },
             { name: "DIVIJA", std: "II", house: "Green" },
             { name: "DHRUV PATIL", std: "III", house: "Green" },
+
+            // Red House
             { name: "ANUJ SACHIN KURHADKAR", std: "I", house: "Red" },
             { name: "DAKSH ANIL PARKHE", std: "I", house: "Red" },
             { name: "GLORY DOLAS", std: "I", house: "Red" },
@@ -624,6 +628,8 @@
             { name: "PRATEEK YADAV", std: "I", house: "Red" },
             { name: "KANU", std: "IV", house: "Red" },
             { name: "SHAURYA PRATAP", std: "V", house: "Red" },
+
+            // Yellow House
             { name: "AAI KUMARI", std: "I", house: "Yellow" },
             { name: "AARADHYA KULKARNI", std: "I", house: "Yellow" },
             { name: "ANUSHKA SINGH", std: "I", house: "Yellow" },
@@ -752,12 +758,12 @@
             renderTable();
         }
 
-        function calculateTotal(index) {
-            const s = scores[index] || {};
+        function calculateTotal(student) {
+            const s = scores[student.name] || {};
             return (Number(s.disc) || 0) + (Number(s.unif) || 0) + (Number(s.hin) || 0) + 
                    (Number(s.eng) || 0) + (Number(s.mar) || 0) + (Number(s.math) || 0) + 
-                   (Number(s.sci) || 0) + (Number(s.gk) || 0) + (Number(s.ict) || 0) + 
-                   (Number(s.lib) || 0) + (Number(s.rob) || 0) + (Number(s.ss) || 0);
+                   (Number(s.sci) || 0) + (Number(s.dance) || 0) + (Number(s.ict) || 0) + 
+                   (Number(s.lib) || 0) + (Number(s.ac) || 0) + (Number(s.ss) || 0);
         }
 
         function renderLeaderboard() {
@@ -769,9 +775,9 @@
                 let topStudent = null;
                 let maxPoints = -1;
 
-                students.forEach((student, index) => {
+                students.forEach((student) => {
                     if (student.std === cls) {
-                        const total = calculateTotal(index);
+                        const total = calculateTotal(student);
                         if (total > maxPoints) {
                             maxPoints = total;
                             topStudent = student;
@@ -803,14 +809,14 @@
             tbody.innerHTML = '';
             let srNo = 1;
 
-            students.forEach((student, index) => {
+            students.forEach((student) => {
                 if (filterClass !== "ALL" && student.std !== filterClass) return;
                 if (filterHouse !== "ALL" && student.house !== filterHouse) return;
                 if (searchQuery && !student.name.toLowerCase().includes(searchQuery.toLowerCase())) return;
 
-                const s = scores[index] || {};
-                const f = feedback[index] || {};
-                const total = calculateTotal(index);
+                const s = scores[student.name] || {};
+                const f = feedback[student.name] || {};
+                const total = calculateTotal(student);
 
                 const renderCell = (field) => {
                     const val = Number(s[field]) || 0;
@@ -831,10 +837,10 @@
                     ${renderCell('mar')}
                     ${renderCell('math')}
                     ${renderCell('sci')}
-                    ${renderCell('gk')}
+                    ${renderCell('dance')}
                     ${renderCell('ict')}
                     ${renderCell('lib')}
-                    ${renderCell('rob')}
+                    ${renderCell('ac')}
                     ${renderCell('ss')}
                     <td class="total-cell">${total}</td>
                 `;
