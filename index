@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OM Public School (Pragati360)</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #0284c7;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover { background: #dc2626; }
+
+        #loginOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 380px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .login-card h2 {
+            margin-top: 0;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .controls, .add-student-panel {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .controls select, .controls input, .add-student-panel select, .add-student-panel input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .controls input[type="text"] { flex-grow: 1; }
+
+        .btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn:hover { background-color: #0369a1; }
+        .btn-add { background-color: #16a34a; }
+        .btn-add:hover { background-color: #15803d; }
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            min-width: 1500px;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid #f1f5f9;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--primary);
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+        }
+
+        td.student-name {
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .point-btn {
+            background: #e2e8f0;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            line-height: 1;
+            margin: 0 2px;
+        }
+        .point-btn:hover { background: #cbd5e1; }
+        .point-btn.disabled { background: #f1f5f9; color: #cbd5e1; cursor: not-allowed; }
+
+        .total-cell {
+            font-weight: bold;
+            color: var(--primary);
+            background-color: #eff6ff;
+        }
+
+        .feedback-input {
+            width: 130px;
+            padding: 4px 6px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="loginOverlay">
+        <div class="login-card">
+            <h2>Faculty Login</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="teacherId">Username:</label>
+                    <input type="text" id="teacherId" required placeholder="e.g. vikash, pankaj">
+                </div>
+                <div class="form-group">
+                    <label for="teacherPass">Password:</label>
+                    <input type="password" id="teacherPass" required placeholder="Enter password">
+                </div>
+                <div id="loginError" class="error-msg"></div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Login</button>
+            </form>
+            <p style="font-size: 11px; color: #64748b; margin-top: 15px; text-align: center;">
+                Default Password for all faculty: <b>pass123</b><br>
+                Admin (Vikash Yadav): <b>vikash</b> (Pass: <b>vikash123</b>)
+            </p>
+        </div>
+    </div>
+
+    <header>
+        <img src="./logo.png" alt="School Logo" class="logo" onerror="this.style.display='none'">
+        <div>
+            <h1>OM PUBLIC SCHOOL</h1>
+            <p id="headerSubtitle">Merit & Discipline Points Ledger (Max 5 Marks per Category)</p>
+        </div>
+        <button id="logoutBtn" class="logout-btn hidden" onclick="handleLogout()">Logout</button>
+    </header>
+
+    <div id="addStudentPanel" class="add-student-panel hidden">
+        <label>Add New Student:</label>
+        <input type="text" id="newStudentName" placeholder="Full Student Name">
+        <select id="newStudentClass">
+            <option value="I">Class I</option><option value="II">Class II</option>
+            <option value="III">Class III</option><option value="IV">Class IV</option>
+            <option value="V">Class V</option><option value="VI">Class VI</option>
+            <option value="VII">Class VII</option><option value="VIII">Class VIII</option>
+            <option value="IX">Class IX</option><option value="X">Class X</option>
+        </select>
+        <select id="newStudentDiv">
+            <option value="A">Division A</option>
+            <option value="B">Division B</option>
+        </select>
+        <button type="button" class="btn btn-add" onclick="addStudent()">+ Add Student</button>
+    </div>
+
+    <div class="controls">
+        <label for="classFilter">Select Class:</label>
+        <select id="classFilter" onchange="populateStudentDropdown(); filterData();">
+            <option value="ALL">-- All Classes --</option>
+            <option value="I">Class I</option><option value="II">Class II</option>
+            <option value="III">Class III</option><option value="IV">Class IV</option>
+            <option value="V">Class V</option><option value="VI">Class VI</option>
+            <option value="VII">Class VII</option><option value="VIII">Class VIII</option>
+            <option value="IX">Class IX</option><option value="X">Class X</option>
+        </select>
+
+        <label for="divFilter">Select Division:</label>
+        <select id="divFilter" onchange="populateStudentDropdown(); filterData();">
+            <option value="ALL">-- All Divisions --</option>
+            <option value="A">Division A</option>
+            <option value="B">Division B</option>
+        </select>
+
+        <label for="studentDropdown">Select Student:</label>
+        <select id="studentDropdown" onchange="filterData()">
+            <option value="">-- All Students --</option>
+        </select>
+
+        <label for="searchInput">Search Name:</label>
+        <input type="text" id="searchInput" placeholder="Type student name..." onkeyup="filterData()">
+
+        <button type="button" class="btn" onclick="saveData()">Save All</button>
+    </div>
+
+    <div class="table-container">
+        <table id="ledgerTable">
+            <thead>
+                <tr>
+                    <th>Sr.</th>
+                    <th>Student Name</th>
+                    <th>Std</th>
+                    <th>Div</th>
+                    <th>Discipline</th>
+                    <th>Uniform (N/H)</th>
+                    <th>Hindi</th>
+                    <th>English</th>
+                    <th>Marathi</th>
+                    <th>Maths</th>
+                    <th>Science</th>
+                    <th>Dance</th>
+                    <th>ICT</th>
+                    <th>Library</th>
+                    <th>A/C</th>
+                    <th>SS</th>
+                    <th>Total Points</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbw8xjGDs19XhFRuo5ba85schaM_34MYth6egFDWh-sjvTQBEIvnnojOfBdgJsgwlJG5Lw/exec";
+
+        const teachersDB = {
+            "vijeta": { pass: "vijeta123", name: "Vijeta Sinha (Principal)", allowed: [] },
+            "vikash": { pass: "vikash123", name: "Vikash Yadav (Admin)", allowed: [] },
+            "pankaj": { pass: "pass123", name: "Pankaj", allowed: ["hin"] },
+            "jayanti": { pass: "pass123", name: "Jayanti Dash", allowed: ["hin", "ss", "eng"] },
+            "pamila": { pass: "pass123", name: "Pamila Yadav", allowed: ["disc"] },
+            "khairunnisa": { pass: "pass123", name: "Khairunnisa Sayed", allowed: ["eng", "ss"] },
+            "santoshi": { pass: "pass123", name: "Santoshi Padhi", allowed: ["eng"] },
+            "sharvari": { pass: "pass123", name: "Sharvari Hirlekar", allowed: ["eng"] },
+            "roshani": { pass: "pass123", name: "Roshani Raut", allowed: ["math"] },
+            "binita": { pass: "pass123", name: "Binita Mohapatra", allowed: ["sci"] },
+            "indika": { pass: "pass123", name: "Indika Arnakal", allowed: ["sci","ss"] },
+            "dhara": { pass: "pass123", name: "Dhara Vyas", allowed: ["sci", "math"] },
+            "vinay": { pass: "pass123", name: "Vinay Kumar Upadhyay", allowed: ["ss", "disc", "unif"] },
+            "priyanka": { pass: "pass123", name: "Priyanka Redekar", allowed: ["ss", "ict"] },
+            "swati": { pass: "pass123", name: "Swati Khaire", allowed: ["mar"] },
+            "dinesh": { pass: "pass123", name: "Dinesh Lagad", allowed: ["disc", "unif"] },
+            "prasant": { pass: "pass123", name: "Prasant Kumar Pandey", allowed: ["disc", "unif"] },
+            "riddhi": { pass: "pass123", name: "Riddhi (Art & Craft)", allowed: ["ac"] },
+            "shruti": { pass: "pass123", name: "Shruti Saxena", allowed: ["ict"] },
+            "akshay": { pass: "pass123", name: "Akshay Kamble", allowed: ["dance"] },
+            "ashutosh": { pass: "pass123", name: "Ashutosh Thorat", allowed: ["dance"] },
+            "anagha": { pass: "pass123", name: "Anagha Samudra", allowed: ["disc"] },
+            "shalini": { pass: "pass123", name: "Shalini Pandey", allowed: ["disc"] },
+            "mamta": { pass: "pass123", name: "Mamta Yadav", allowed: ["sci"] },
+            "prerna": { pass: "pass123", name: "Prerna Poojari", allowed: ["eng"] },
+            "sulochana": { pass: "pass123", name: "Sulochana Nair", allowed: ["mar"] }
+        };
+
+        let currentTeacher = null;
+        let students = [];
+        let scores = {};
+        let feedback = {};
+
+        // Official complete 454 student roster extracted from school Excel file (by Standard and Division)
+        const defaultStudents = [
+            { name: "AAI KUMARI", std: "I", div: "A" }, { name: "AARAV KAMLESH GAUD", std: "I", div: "A" }, { name: "AASHWI JAGDISH PATIL", std: "I", div: "A" }, { name: "ANMOL DEEPAK YADAV", std: "I", div: "A" }, { name: "ANUSHKA SINGH", std: "I", div: "A" }, { name: "ANVIT NILESH RANE", std: "I", div: "A" }, { name: "DARSHANA DIPAK SAROJ", std: "I", div: "A" }, { name: "DIKSHA AMIT CHATURVEDI", std: "I", div: "A" }, { name: "Hansika Ajit Paswan", std: "I", div: "A" }, { name: "Inaya Tadavi", std: "I", div: "A" }, { name: "JAI PRATAP SINGH", std: "I", div: "A" }, { name: "JIYANSH ANIL MHATRE", std: "I", div: "A" }, { name: "JISHA DINESH PATIL", std: "I", div: "A" }, { name: "KRISHN MAHINDRA JAIN", std: "I", div: "A" }, { name: "MAYANK KIRAN KALE", std: "I", div: "A" }, { name: "MEERA RAJPUROHIT", std: "I", div: "A" }, { name: "NAITIK MAHENDRA SINGH RAWAL", std: "I", div: "A" }, { name: "NIHARIKA DEVIPRASAD MISHRA", std: "I", div: "A" }, { name: "OM DEVEESARAN YADAV", std: "I", div: "A" }, { name: "PULKIT KULDEEP MISHRA", std: "I", div: "A" }, { name: "Rahul Lamkhade Aradhya", std: "I", div: "A" }, { name: "RAVINDRA KUMAR DEWASI", std: "I", div: "A" }, { name: "RIDHIKA VIJAY GUPTA", std: "I", div: "A" }, { name: "Riddhi Ramdas Rahate", std: "I", div: "A" }, { name: "RIVAN KUMAR", std: "I", div: "A" }, { name: "SHIVANSH SUDARSHAN KHEDKAR", std: "I", div: "A" }, { name: "SHREEJA JADHAV", std: "I", div: "A" }, { name: "SWARA DNYANESHWAR DESHMANE", std: "I", div: "A" }, { name: "VAIDEHI DATTU PATIL", std: "I", div: "A" }, { name: "VISHAKHA GAUTAM SABANE", std: "I", div: "A" }, { name: "Visshvesh Tushar Navale", std: "I", div: "A" }, { name: "VIYAN BHATI", std: "I", div: "A" }, { name: "YUG CHAKRAVATI PATIL", std: "I", div: "A" }, { name: "YUVIKA NAGENDER PAL", std: "I", div: "A" }, { name: "Daksh Anil Parkhe", std: "I", div: "A" }, { name: "Niharika Deviprasad Mishra", std: "I", div: "A" }, { name: "Devansh Jagdish Dhobale", std: "I", div: "A" }, { name: "Aaradhya Kulkarni", std: "I", div: "A" },
+            { name: "Adarsh Jadhav", std: "I", div: "B" }, { name: "ADVIT SAGAR SHINGAN", std: "I", div: "B" }, { name: "BHAVYA HIMMAT SINGH RAJPUT", std: "I", div: "B" }, { name: "DAKSH ANIL PARKHE", std: "I", div: "B" }, { name: "Devansh More", std: "I", div: "B" }, { name: "DURVA GANESH SHINDE", std: "I", div: "B" }, { name: "Glory Dolas", std: "I", div: "B" }, { name: "KADAMBARI VISHWAS CHAVAN", std: "I", div: "B" }, { name: "KESHAV MANDARE", std: "I", div: "B" }, { name: "KRISHNA DALPAT KUMHAVAT", std: "I", div: "B" }, { name: "LAVANYA PRASHANT RAUT", std: "I", div: "B" }, { name: "LIKHITA CHANDANA GURRAM", std: "I", div: "B" }, { name: "NIVAAN SATISH DAMA", std: "I", div: "B" }, { name: "PRAGYA RAJAN SHUKLA", std: "I", div: "B" }, { name: "PRAYA SAGAR BANDICHODE", std: "I", div: "B" }, { name: "PRIYANK RAHUL KENE", std: "I", div: "B" }, { name: "PRIYANSHI MANOJ SHINDE", std: "I", div: "B" }, { name: "RAGHAV NILESH AROTE", std: "I", div: "B" }, { name: "RAJESHWARI NITIN THOMBARE", std: "I", div: "B" }, { name: "RIYANSH WALMIK MHATRE", std: "I", div: "B" }, { name: "RUDRARAJ KADAM", std: "I", div: "B" }, { name: "SHRAVANI BHARAT SALGAR", std: "I", div: "B" }, { name: "SHREYA RAJENDRA SUTAR", std: "I", div: "B" }, { name: "SHRISHA SANDEEP CHANDANSHIVE", std: "I", div: "B" }, { name: "VEDANSH SINGH", std: "I", div: "B" }, { name: "VEDANSH VARUN SINGH", std: "I", div: "B" }, { name: "VIDHI PRADEEP PANDEY", std: "I", div: "B" }, { name: "VIRAJ VAIBHAV", std: "I", div: "B" }, { name: "AADYA CHAKRABORTY", std: "II", div: "A" }, { name: "AAKARSHI SAXENA", std: "II", div: "A" }, { name: "ADHIRAJ SINGH", std: "II", div: "A" }, { name: "ADVIK PRITAM PAWAR", std: "II", div: "A" }, { name: "AMIT SHYAM FADTALE", std: "II", div: "A" }, { name: "ANGELINA HILARY", std: "II", div: "A" }, { name: "ANSH ASHOK CHOUDHARY", std: "II", div: "A" }, { name: "ANVI SAMIR HANDE", std: "II", div: "A" }, { name: "ARYAN PANDEY", std: "II", div: "A" }, { name: "ASHVIN SARVAN KUMAR DEWASI", std: "II", div: "A" }, { name: "DEVANSH GANESH PAWAR", std: "II", div: "A" }, { name: "DHRUV BHAGAT", std: "II", div: "A" }, { name: "DNYANAVI SUSHANT NAWALE", std: "II", div: "A" }, { name: "DURVESH SATISH GAYKAR", std: "II", div: "A" }, { name: "K. MAHATHE", std: "II", div: "A" }, { name: "KARTIK SANDIP PATIL", std: "II", div: "A" }, { name: "KUSHAL RAMBABU PANDEY", std: "II", div: "A" }, { name: "LAXMI SAMADHAN PATIL", std: "II", div: "A" }, { name: "MOHIT SINGH RAJPUROHIT", std: "II", div: "A" }, { name: "MONIKA YOGESH PATIL", std: "II", div: "A" }, { name: "PALLAV KAILAS MHADAYE", std: "II", div: "A" }, { name: "PREET RAJESH PATIL", std: "II", div: "A" }, { name: "PRIYANSHEE PARASHAR GARGARI", std: "II", div: "A" }, { name: "RENIL SUNIL PATIDAR", std: "II", div: "A" }, { name: "RUTVI UMESH DEVKAR", std: "II", div: "A" }, { name: "SAATVIK SITARAM GUND", std: "II", div: "A" }, { name: "SAMAIRA RANA GODBOLE", std: "II", div: "A" }, { name: "SHIVANSH SANTOSH GAWANDE", std: "II", div: "A" }, { name: "SHRAVI SANDIP SHEWALE", std: "II", div: "A" }, { name: "SHREESHA PANKAJ DENGALE", std: "II", div: "A" }, { name: "VEDIKA ATUL BADGUJAR", std: "II", div: "A" }, { name: "VINAYAK YADAV", std: "II", div: "A" }, { name: "VIREN SANDESH PATIL", std: "II", div: "A" }, { name: "AAHAN VISHAL PATIL", std: "II", div: "B" }, { name: "AANSHI KUMARI", std: "II", div: "B" }, { name: "AARYA PRITAM PATIL", std: "II", div: "B" }, { name: "AAYUSH RAHUL MAURYA", std: "II", div: "B" }, { name: "ADYAH VIKAS CHOUDHARY", std: "II", div: "B" }, { name: "AMAIRA VISHAL KUMAR GUPTA", std: "II", div: "B" }, { name: "ANVAY AVINASH MENDHE", std: "II", div: "B" }, { name: "ARNAVI NARENDRA PATIL", std: "II", div: "B" }, { name: "AROHI AMOL GAIKWAD", std: "II", div: "B" }, { name: "BHAGYASHA NITIN MAHIRE", std: "II", div: "B" }, { name: "CHINMAY VIJAY PAWAR", std: "II", div: "B" }, { name: "DEVANSH NITIN PAWAR", std: "II", div: "B" }, { name: "HARSH DEVRAM GAWANDE", std: "II", div: "B" }, { name: "JAYDITYA YOGESH KUMAR", std: "II", div: "B" }, { name: "JIJA RAVINDRA ZEPALE", std: "II", div: "B" }, { name: "KARTIK PANDURANG ZINGE", std: "II", div: "B" }, { name: "KRUSHNALI DIPAK HEROLE", std: "II", div: "B" }, { name: "KUNJ KISHAN MHATRE", std: "II", div: "B" }, { name: "MALHAR BHAGWAN AVHAD", std: "II", div: "B" }, { name: "MANYATA MANOJ PAWSHE", std: "II", div: "B" }, { name: "PRADOSH SUMIT BHASKAR", std: "II", div: "B" }, { name: "PRMISHA VISHAL GAYKAR", std: "II", div: "B" }, { name: "PRIYANSH PRITAM PAWAR", std: "II", div: "B" }, { name: "RUCHIT PURI GOSWAMI", std: "II", div: "B" }, { name: "RUHI SHIVKUMAR JAISWAL", std: "II", div: "B" }, { name: "SHIVAAY ROSHAN PATIL", std: "II", div: "B" }, { name: "SHIVAM RAHUL KANADE", std: "II", div: "B" }, { name: "SHIVANSH DAYANAND WAGARE", std: "II", div: "B" }, { name: "SWARA VINAYAK KHODASE", std: "II", div: "B" }, { name: "TANMAY YADAV", std: "II", div: "B" }, { name: "TRISHA RAHUL PAWAR", std: "II", div: "B" }, { name: "YASHO SANTOSH VARAL", std: "II", div: "B" }, { name: "YUVAAN SUSHANT KATKAR", std: "II", div: "B" },
+            { name: "AAHAANA HARDIK GALA", std: "III", div: "A" }, { name: "AARADHYA SUMIT SAHU", std: "III", div: "A" }, { name: "AARYAN BHASKAR AROTE", std: "III", div: "A" }, { name: "ADITYA RAHUL UDPI", std: "III", div: "A" }, { name: "ADVIK KUMAR", std: "III", div: "A" }, { name: "AGASTYA SIDDHARTH GAIKWAD", std: "III", div: "A" }, { name: "ANSHITA DYANDEV KOLI", std: "III", div: "A" }, { name: "ARPITA SINGH", std: "III", div: "A" }, { name: "ARYAN KISHOR KUMAR", std: "III", div: "A" }, { name: "BUDDHANSH SURAJ JADHAV", std: "III", div: "A" }, { name: "CHHAVI TAYWADE", std: "III", div: "A" }, { name: "CHINMAY NILESH MORE", std: "III", div: "A" }, { name: "DIKSITA JITENDRAPURI GOSWAMI", std: "III", div: "A" }, { name: "DIVYANSH SOMNATH PATIL", std: "III", div: "A" }, { name: "GURRAM CHANDRA", std: "III", div: "A" }, { name: "HITESHRI AMOL BHANGALE", std: "III", div: "A" }, { name: "JIHAN KIRAN PATIL", std: "III", div: "A" }, { name: "KAIVALYA SANDESH PATIL", std: "III", div: "A" }, { name: "LAKSH KRISHNA BAGADE", std: "III", div: "A" }, { name: "LAKSHRAJ SINGH", std: "III", div: "A" }, { name: "NAKSH GANESH PATIL", std: "III", div: "A" }, { name: "NAKSH MUKESH PATIL", std: "III", div: "A" }, { name: "NAKSHRAJ SINGH", std: "III", div: "A" }, { name: "NISHITA RAVINDRA PRAJAPATI", std: "III", div: "A" }, { name: "RAGHAV PRASHANT BHOIR", std: "III", div: "A" }, { name: "RIYANSH KIRTIKUMAR PATIL", std: "III", div: "A" }, { name: "RUDRANSH CHANDRAPAL BAIS", std: "III", div: "A" }, { name: "SHAGUN SANJEEV SINGH", std: "III", div: "A" }, { name: "SIDDHI SHREECHAND MISHRA", std: "III", div: "A" }, { name: "SRISHTI NEERAJ DUBEY", std: "III", div: "A" }, { name: "SURAJ DIPAK PANDEY", std: "III", div: "A" }, { name: "VIHAAN BHASKAR GADEKAR", std: "III", div: "A" }, { name: "VIHAAN RAVINDRA SHINDE", std: "III", div: "A" }, { name: "AARADHYA SHIVDAS PATIL", std: "III", div: "B" }, { name: "AARADHYABA WAGHELA", std: "III", div: "B" }, { name: "ABHIJIT LAKHANKUMAR MAHTO", std: "III", div: "B" }, { name: "ABHINAV OM NARAYAN PANDEY", std: "III", div: "B" }, { name: "ADITI VIVEK SHARMA", std: "III", div: "B" }, { name: "AGRIMA", std: "III", div: "B" }, { name: "ANAISHA VERMA", std: "III", div: "B" }, { name: "ANIKA ANUP TRIPATHI", std: "III", div: "B" }, { name: "AVDHUT NITIN THOMBARE", std: "III", div: "B" }, { name: "AYUSH GAJANAN KUMBHAR", std: "III", div: "B" }, { name: "BHAVARTH GURUNATH PATIL", std: "III", div: "B" }, { name: "BHUMIKA VIJAY GUPTA", std: "III", div: "B" }, { name: "DHRUVIN JAYESH SHELAR", std: "III", div: "B" }, { name: "FELISA SUNNY BANSODE", std: "III", div: "B" }, { name: "GAURAV ASHOK CHOUDHARY", std: "III", div: "B" }, { name: "HAMDAN SHAKEEL SHAIKH", std: "III", div: "B" }, { name: "KANISHKA KAPIL PATIL", std: "III", div: "B" }, { name: "KAVITA DEWASI", std: "III", div: "B" }, { name: "KUMARI ANNANYA", std: "III", div: "B" }, { name: "MAYANK LAXMANLAL GURJAR", std: "III", div: "B" }, { name: "NISHCHAL KIRAN PATIL", std: "III", div: "B" }, { name: "PRINCE SUNIL YADAV", std: "III", div: "B" }, { name: "PRISHA PRAMOD YADAV", std: "III", div: "B" }, { name: "SAMARTHA KIRAN KALE", std: "III", div: "B" }, { name: "SANSKAR TRIPATHI", std: "III", div: "B" }, { name: "SARVANGI DILKUSH MHATRE", std: "III", div: "B" }, { name: "SWARAJ YOGESH MHATRE", std: "III", div: "B" }, { name: "TANMAY NITEEN ZADE", std: "III", div: "B" }, { name: "VIRAJ RAJESH MISHRA", std: "III", div: "B" }, { name: "YASH MAHENDRA JAIN", std: "III", div: "B" }, { name: "YOG RUPESH PATIL", std: "III", div: "B" },
+            { name: "AARADHYA NILESH JADHAV", std: "IV", div: "A" }, { name: "AARAVI RAVI SINGH", std: "IV", div: "A" }, { name: "AMAY YADAV", std: "IV", div: "A" }, { name: "ANSH VIKRAM PARMAR", std: "IV", div: "A" }, { name: "ANVESH AMOL KARE", std: "IV", div: "A" }, { name: "ANVI AVINASH MENDHE", std: "IV", div: "A" }, { name: "ARNAVI SANJAY MAHADIK", std: "IV", div: "A" }, { name: "ARNAVI SAINATH PATIL", std: "IV", div: "A" }, { name: "ARUNIMA OM NARAYAN PANDEY", std: "IV", div: "A" }, { name: "BHUMI RATNESHWAR SHUKLA", std: "IV", div: "A" }, { name: "DEVYANKA SANDEEP GAIKWAD", std: "IV", div: "A" }, { name: "GAURI TARUN", std: "IV", div: "A" }, { name: "HITIKA MANOJ CHOUDHARY", std: "IV", div: "A" }, { name: "KAAVYA KASHYAP", std: "IV", div: "A" }, { name: "KASTURI SANDIP PATIL", std: "IV", div: "A" }, { name: "KRISHNA VIKAS SINGH", std: "IV", div: "A" }, { name: "MANN KASHYAP", std: "IV", div: "A" }, { name: "MANSI SHAMBHU LAL JAT", std: "IV", div: "A" }, { name: "MANUSHRI RAJKUMAR MANKALA", std: "IV", div: "A" }, { name: "MHASKE URMI APPASAHEB", std: "IV", div: "A" }, { name: "MIVAAN RAJESH NAIR", std: "IV", div: "A" }, { name: "NIKUNJ VILAS DHAGE", std: "IV", div: "A" }, { name: "OM ANUP TRIPATHI", std: "IV", div: "A" }, { name: "PRIYANSHI PAVAN TIWARI", std: "IV", div: "A" }, { name: "SAANVI KUMARI", std: "IV", div: "A" }, { name: "SANISH SURAJ JADHAV", std: "IV", div: "A" }, { name: "SHIVANSH MAHESH DAWANGE", std: "IV", div: "A" }, { name: "SHLOK PANKAJ BAWNE", std: "IV", div: "A" }, { name: "SHUBHAM KRISHNA SAHOO", std: "IV", div: "A" }, { name: "VAIDIK SINGH", std: "IV", div: "A" }, { name: "VEDANSH SUBHASH YADAV", std: "IV", div: "A" }, { name: "VIRAAJ MAHESH DATILKAR", std: "IV", div: "A" }, { name: "VISHNU PARTHIBHAN", std: "IV", div: "A" },
+            { name: "AAROHI ASHISH AWCHAR", std: "V", div: "A" }, { name: "AANYA AASHISH SINHA", std: "V", div: "A" }, { name: "ABHI VAISHYA", std: "V", div: "A" }, { name: "ABHINAV KUMAR", std: "V", div: "A" }, { name: "ADVIKA GANESH MUKHEKAR", std: "V", div: "A" }, { name: "AKSHAT RAJKUMAR VARMA", std: "V", div: "A" }, { name: "ALOK BIPIN YADAV", std: "V", div: "A" }, { name: "ANUPRIYA SANJAYKUMAR GUPTA", std: "V", div: "A" }, { name: "ANURAG KUMAR", std: "V", div: "A" }, { name: "ARADHYA KUMARI", std: "V", div: "A" }, { name: "ATHARVA BALWANT GUPTA", std: "V", div: "A" }, { name: "BHAIRAV MAHENDRA JAIN", std: "V", div: "A" }, { name: "DEVANSHI TRIPATHI", std: "V", div: "A" }, { name: "DHAYAN NILESH BHANUSHALI", std: "V", div: "A" }, { name: "GUNJAN KANWAR", std: "V", div: "A" }, { name: "ISHANI SINGH", std: "V", div: "A" }, { name: "ISHWARI ANIL DOMALE", std: "V", div: "A" }, { name: "ISHWARI ARUN BIRAJDAR", std: "V", div: "A" }, { name: "JIYAN GANESH PATIL", std: "V", div: "A" }, { name: "KARTIK DATTA BHAGAT", std: "V", div: "A" }, { name: "MANAS KURHADKAR", std: "V", div: "A" }, { name: "MANVEER CHUMBALKAR", std: "V", div: "A" }, { name: "NAMAN MANISH SRIVASTAV", std: "V", div: "A" }, { name: "NIRVIGHNA PANDEY", std: "V", div: "A" }, { name: "NIYATI SATISH GAYKAR", std: "V", div: "A" }, { name: "PIHU", std: "V", div: "A" }, { name: "REYANSH SAHA", std: "V", div: "A" }, { name: "SAMARTH BHATTI", std: "V", div: "A" }, { name: "SAMIKSHA TIRUPATI AVADUT", std: "V", div: "A" }, { name: "SHRAVYA ANANDA PARTHE", std: "V", div: "A" }, { name: "SHUBHRA AJIT UTEKAR", std: "V", div: "A" }, { name: "SHUBHRA SHAILESH WAGHADE", std: "V", div: "A" }, { name: "SRUSHTI PRASHANT PHADNIS", std: "V", div: "A" }, { name: "SWARA RATHOD", std: "V", div: "A" }, { name: "VEDANT HEMARAM CHOUDHARI", std: "V", div: "A" }, { name: "VEDANT VIKAS CHOUDHARY", std: "V", div: "A" }, { name: "VIHAAN AJAY GUPTA", std: "V", div: "A" }, { name: "VIVAAN AJAY GUPTA", std: "V", div: "A" }, { name: "YASH SHAH", std: "V", div: "A" }, { name: "YUG DEVIDAS PATIL", std: "V", div: "A" }, { name: "YUG SINGH", std: "V", div: "A" },
+            { name: "AARADHYA RAHUL PAWAR", std: "VI", div: "A" }, { name: "AAROHI GANESH PATIL", std: "VI", div: "A" }, { name: "AARYA PATIL", std: "VI", div: "A" }, { name: "AARYA SINGH", std: "VI", div: "A" }, { name: "AAYUSHI ROY", std: "VI", div: "A" }, { name: "ADITYA LALMAN CHOUDHARY", std: "VI", div: "A" }, { name: "ADITYA SINGH", std: "VI", div: "A" }, { name: "ADITYAKUMAR MOHANTY", std: "VI", div: "A" }, { name: "ADVAITH VAIDYANATH", std: "VI", div: "A" }, { name: "ANSHIKA SANJAYKUMAR GUPTA", std: "VI", div: "A" }, { name: "ARJUN BHATTALWAR", std: "VI", div: "A" }, { name: "AVANIKA MAHESH FULSE", std: "VI", div: "A" }, { name: "CHARMI BAGUL", std: "VI", div: "A" }, { name: "DEVANSH DHARAMCHAND SUTAR", std: "VI", div: "A" }, { name: "DHRUVI RAVI SINGH", std: "VI", div: "A" }, { name: "HARDIK PANDEY", std: "VI", div: "A" }, { name: "HETH SUNIL NAKHUVA", std: "VI", div: "A" }, { name: "JAYDIP YOGESH GAGARE", std: "VI", div: "A" }, { name: "JAZZLEEN KAUR NAVEET VAID", std: "VI", div: "A" }, { name: "JINISHA DNYANESHWAR PATIL", std: "VI", div: "A" }, { name: "JINAL DNYANESHWAR PATIL", std: "VI", div: "A" }, { name: "K. PRAGATHE", std: "VI", div: "A" }, { name: "KANU", std: "VI", div: "A" }, { name: "PRITHVI PAVAN RAUT", std: "VI", div: "A" }, { name: "RADHIKA RAMSURAT MISHRA", std: "VI", div: "A" }, { name: "RITIK RAJNISH PAYASI", std: "VI", div: "A" }, { name: "RUTVIKA PRITAM PATIL", std: "VI", div: "A" }, { name: "S. SIVAKRISH", std: "VI", div: "A" }, { name: "SHLOK SAGAR SALUNKHE", std: "VI", div: "A" }, { name: "SHIVI SAXENA", std: "VI", div: "A" }, { name: "SONALI", std: "VI", div: "A" }, { name: "TEJAS YOGESH KHAIRNAR", std: "VI", div: "A" }, { name: "UMM E HANI", std: "VI", div: "A" }, { name: "VANSH YOGESH KUMAR", std: "VI", div: "A" }, { name: "VIHANA SAINATH PATIL", std: "VI", div: "A" }, { name: "YASHIKA SHARMA", std: "VI", div: "A" },
+            { name: "AARADHY DYANDEV KOLI", std: "VII", div: "A" }, { name: "AAYUSH BALWANT GUPTA", std: "VII", div: "A" }, { name: "AAYUSH JAGDISH PATIL", std: "VII", div: "A" }, { name: "AKRITI KUMARI", std: "VII", div: "A" }, { name: "ANSH SANJAYKUMAR GUPTA", std: "VII", div: "A" }, { name: "ANSHU KAMLESH GAUD", std: "VII", div: "A" }, { name: "AVIYANSH GUPTA", std: "VII", div: "A" }, { name: "BHAVYA SINGH", std: "VII", div: "A" }, { name: "DIVYA KISHANSINGH CHAUHAN", std: "VII", div: "A" }, { name: "DIVYANSHI VAISHYA", std: "VII", div: "A" }, { name: "GIA RAJVI SUNDARRAJ", std: "VII", div: "A" }, { name: "INAAYA HOSSAIN", std: "VII", div: "A" }, { name: "JANVI KISHANSINGH CHOUHAN", std: "VII", div: "A" }, { name: "JASFER SAMPSON SASANI", std: "VII", div: "A" }, { name: "KIRTI LAXMAN GURJAR", std: "VII", div: "A" }, { name: "MAHESH SANDEEP DIVATE", std: "VII", div: "A" }, { name: "MAYURESH PRAVIN MAHIRE", std: "VII", div: "A" }, { name: "MOHIT YATIN PALAV", std: "VII", div: "A" }, { name: "NANDINI BIPIN YADAV", std: "VII", div: "A" }, { name: "NAMAN PATIL", std: "VII", div: "A" }, { name: "PRATHAM MAHESH SHETTY", std: "VII", div: "A" }, { name: "PRATIK PAL", std: "VII", div: "A" }, { name: "PRISHA ANURA", std: "VII", div: "A" }, { name: "RADHIKA DHARMENDRA PARMAR", std: "VII", div: "A" }, { name: "RAJNANDINI SAHURAJ DIGGE", std: "VII", div: "A" }, { name: "RUDRA SAMEER BERDE", std: "VII", div: "A" }, { name: "RUNMAYEE VIJAY MARATHE", std: "VII", div: "A" }, { name: "SAKSHAM SANTOSH MALUSARE", std: "VII", div: "A" }, { name: "SAMRUDDHI PRASHANT PHADNIS", std: "VII", div: "A" }, { name: "SOHAM DEBKUMAR PAUL", std: "VII", div: "A" }, { name: "Soham Rathod", std: "VII", div: "A" }, { name: "SWASTIK ASHOK SAHU", std: "VII", div: "A" }, { name: "SWARA SANDIP SHEWALE", std: "VII", div: "A" }, { name: "TANMAYEE VIJAY MARATHE", std: "VII", div: "A" }, { name: "TASHI MAHESH SHETTY", std: "VII", div: "A" }, { name: "VEERESH KUMARESH KALAL", std: "VII", div: "A" }, { name: "YASH MAHESH DATILKAR", std: "VII", div: "A" }, { name: "Satyam yadav", std: "VII", div: "A" }, { name: "PRANAV MISHRA", std: "VII", div: "A" },
+            { name: "AARADHAYA ASHISH TRIPATHI", std: "VIII", div: "A" }, { name: "AARAV VIJAY SINGH", std: "VIII", div: "A" }, { name: "ADITYA RAJKUMAR SINGH", std: "VIII", div: "A" }, { name: "ANANT DUBEY", std: "VIII", div: "A" }, { name: "ANURAG PRADEEP PANDEY", std: "VIII", div: "A" }, { name: "ANVI PANDEY", std: "VIII", div: "A" }, { name: "APOORV JWALITH BOMMI", std: "VIII", div: "A" }, { name: "ARNAV KUMAR", std: "VIII", div: "A" }, { name: "ARYA DUBEY", std: "VIII", div: "A" }, { name: "AVANI TUSHAR KAMBLE", std: "VIII", div: "A" }, { name: "DURVA SACHIN CHAVAN", std: "VIII", div: "A" }, { name: "HARSHAL KRISHNA LADWA", std: "VIII", div: "A" }, { name: "HIMANSHU KANHAIYALAL JANGID", std: "VIII", div: "A" }, { name: "ISHWARI MANDARE", std: "VIII", div: "A" }, { name: "JAGRUTI ANIL GAUTAM", std: "VIII", div: "A" }, { name: "JIDNYASA NANDKISHOR PATIL", std: "VIII", div: "A" }, { name: "KANISH GANESH PAKKI", std: "VIII", div: "A" }, { name: "KARAN KUNAL JOSHI", std: "VIII", div: "A" }, { name: "KAUSHAL GANESH PATIL", std: "VIII", div: "A" }, { name: "KAVYA GANESH PAKKI", std: "VIII", div: "A" }, { name: "Khushi Dhongadi", std: "VIII", div: "A" }, { name: "KUSMITHA SRI BOMMI", std: "VIII", div: "A" }, { name: "MAYANK KUMAR", std: "VIII", div: "A" }, { name: "NADEESH MANTARAM KONAR", std: "VIII", div: "A" }, { name: "NEHA YOGESH KUMAR", std: "VIII", div: "A" }, { name: "NIRBHAY SANDESH PATIL", std: "VIII", div: "A" }, { name: "RAKSHITA SAGAR GAIKWAD", std: "VIII", div: "A" }, { name: "RISHI GYANCHANDRA PAL", std: "VIII", div: "A" }, { name: "SAKSHAM KIRAN PATIL", std: "VIII", div: "A" }, { name: "SAKSHAM SHAMBHULAL JAAT", std: "VIII", div: "A" }, { name: "SAKSHI DHARMENDRA PANDEY", std: "VIII", div: "A" }, { name: "SHUBHAM SWAPNIL SAKALE", std: "VIII", div: "A" }, { name: "SNEHA SHREE GHADIA", std: "VIII", div: "A" }, { name: "SWARAJ REVANNATH ROTE", std: "VIII", div: "A" }, { name: "TAJASA MAHIRE", std: "VIII", div: "A" }, { name: "TANISHQ VISHAL PATIL", std: "VIII", div: "A" }, { name: "Vihan Choudhari", std: "VIII", div: "A" },
+            { name: "AAYAAN HARDIK GALA", std: "IX", div: "A" }, { name: "AAIRAH AZIM NALBAND", std: "IX", div: "A" }, { name: "AMAN JITENDRA GOSWAMI", std: "IX", div: "A" }, { name: "ANSH GYANCHANDRA PAL", std: "IX", div: "A" }, { name: "ANSHU LALMAN CHOUDHARY", std: "IX", div: "A" }, { name: "ATHRAW VINOD SONWANE", std: "IX", div: "A" }, { name: "DEVANSH JITENDRA SHARMA", std: "IX", div: "A" }, { name: "GARGI MAHESH DAWANGE", std: "IX", div: "A" }, { name: "JEET DATTATRAY VIRKAR", std: "IX", div: "A" }, { name: "KAVITA LAXMANLAL GURJAR", std: "IX", div: "A" }, { name: "KETAN RAVINDRA PRAJAPATI", std: "IX", div: "A" }, { name: "NIVEDITA NEERAJ DUBEY", std: "IX", div: "A" }, { name: "Pratam Mali", std: "IX", div: "A" }, { name: "RUDRA DIVEKAR", std: "IX", div: "A" }, { name: "SAMARTH ABHAY JADHAV", std: "IX", div: "A" }, { name: "SAPNA RAMMILAN HARIJAN", std: "IX", div: "A" }, { name: "SARTHAK ARUN JADHAV", std: "IX", div: "A" }, { name: "VINAYAK VIJAY GUPTA", std: "IX", div: "A" }, { name: "YUG SINGH SENGAR", std: "IX", div: "A" },
+            { name: "ALOK YOGESH AGRAWAL", std: "X", div: "A" }, { name: "ANUSHKA SWAPNIL SAKALE", std: "X", div: "A" }, { name: "ANUSHREE DAS", std: "X", div: "A" }, { name: "ARYAN SUMIT SAHU", std: "X", div: "A" }, { name: "ASHWI GIRISH PANDEY", std: "X", div: "A" }, { name: "DAKSHATA MAHESH DATILKAR", std: "X", div: "A" }, { name: "DEVANSH BHANUSHALI", std: "X", div: "A" }, { name: "DIPA DEBKUMAR PAUL", std: "X", div: "A" }, { name: "GANESH SANJAY VISHWAKARMA", std: "X", div: "A" }, { name: "GOPIKA TARUN", std: "X", div: "A" }, { name: "HIMANSHU PARMAR", std: "X", div: "A" }, { name: "ISHAN MONU KUMAR BHATTI", std: "X", div: "A" }, { name: "JANVI RAMESH HEGDE", std: "X", div: "A" }, { name: "JYOTHIKHA M P", std: "X", div: "A" }, { name: "MANU SHREYA SUNDARRAJ", std: "X", div: "A" }, { name: "MIHIKA YADAV", std: "X", div: "A" }, { name: "NIDHI JAYWANT KHAIRE", std: "X", div: "A" }, { name: "OM PANKAJ BAWNE", std: "X", div: "A" }, { name: "PAVANRAJ REVANNATH ROTE", std: "X", div: "A" }, { name: "PRIYA DURGESH KUMAR PATEL", std: "X", div: "A" }, { name: "SALONI JOGENDAR PAL", std: "X", div: "A" }, { name: "SAPNA RAMNATH GUPTA", std: "X", div: "A" }, { name: "SHANVI MAHINDRA JAIN", std: "X", div: "A" }, { name: "SHARDUL NILESH MORE", std: "X", div: "A" }, { name: "SHREENIDHI VINOD VISHWAKARMA", std: "X", div: "A" }, { name: "SHIVRAJ BHUSHAN NAWALE", std: "X", div: "A" }, { name: "SONAM RAJESH MISHRA", std: "X", div: "A" }, { name: "TARANJEET SUNDEEP KHULLAR", std: "X", div: "A" }, { name: "VIHAAN", std: "X", div: "A" }
+        ];
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const id = document.getElementById('teacherId').value.trim().toLowerCase();
+            const pass = document.getElementById('teacherPass').value.trim();
+            const errorDiv = document.getElementById('loginError');
+
+            if (teachersDB[id] && teachersDB[id].pass === pass) {
+                currentTeacher = { username: id, ...teachersDB[id] };
+                document.getElementById('loginOverlay').classList.add('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                
+                if (currentTeacher.allowed.length === 0) {
+                    document.getElementById('addStudentPanel').classList.remove('hidden');
+                    document.getElementById('headerSubtitle').innerText = `Logged in as: ${currentTeacher.name} (Full Admin Access)`;
+                } else {
+                    document.getElementById('headerSubtitle').innerText = `Logged in as: ${currentTeacher.name} (Assigned Sections)`;
+                }
+                loadData();
+            } else {
+                errorDiv.innerText = "Invalid Username or Password!";
+            }
+        }
+
+        function handleLogout() {
+            currentTeacher = null;
+            document.getElementById('teacherId').value = '';
+            document.getElementById('teacherPass').value = '';
+            document.getElementById('loginError').innerText = '';
+            document.getElementById('loginOverlay').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+            document.getElementById('addStudentPanel').classList.add('hidden');
+        }
+
+        async function loadData() {
+            try {
+                const response = await fetch(`${API_URL}?action=getData`);
+                const result = await response.json();
+                
+                scores = result.scores && Object.keys(result.scores).length > 0 ? result.scores : {};
+                students = result.students && result.students.length > 0 ? result.students : [...defaultStudents];
+                feedback = result.feedback || {};
+                
+                populateStudentDropdown();
+                filterData();
+            } catch (error) {
+                console.error("Error loading data:", error);
+                students = [...defaultStudents];
+                scores = {};
+                feedback = {};
+                populateStudentDropdown();
+                filterData();
+            }
+        }
+
+        async function addStudent() {
+            if (currentTeacher && currentTeacher.allowed.length > 0) {
+                alert('Access Denied: Only administrators can add new students.');
+                return;
+            }
+
+            const nameInput = document.getElementById('newStudentName');
+            const name = nameInput.value.trim();
+            const std = document.getElementById('newStudentClass').value;
+            const div = document.getElementById('newStudentDiv').value;
+
+            if (!name) { alert('Please enter a student name.'); return; }
+
+            const newStudent = { name, std, div };
+            students.push(newStudent);
+            nameInput.value = '';
+            
+            await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "addStudent", student: newStudent })
+            });
+
+            populateStudentDropdown();
+            filterData();
+            alert('New student added and synced to Google Sheets!');
+        }
+
+        function populateStudentDropdown() {
+            const classVal = document.getElementById('classFilter').value;
+            const divVal = document.getElementById('divFilter').value;
+            const dropdown = document.getElementById('studentDropdown');
+            dropdown.innerHTML = '<option value="">-- All Students --</option>';
+
+            students.forEach((student) => {
+                const matchClass = (classVal === "ALL" || student.std === classVal);
+                const matchDiv = (divVal === "ALL" || student.div === divVal);
+                if (matchClass && matchDiv) {
+                    const opt = document.createElement('option');
+                    opt.value = student.name;
+                    opt.textContent = `${student.name} (${student.std} - Div ${student.div})`;
+                    dropdown.appendChild(opt);
+                }
+            });
+        }
+
+        function calculateTotal(name) {
+            const s = scores[name] || {};
+            return (Number(s.disc) || 0) + (Number(s.unif) || 0) + (Number(s.hin) || 0) + 
+                   (Number(s.eng) || 0) + (Number(s.mar) || 0) + (Number(s.math) || 0) + 
+                   (Number(s.sci) || 0) + (Number(s.dance) || 0) + (Number(s.ict) || 0) + 
+                   (Number(s.lib) || 0) + (Number(s.ac) || 0) + (Number(s.ss) || 0);
+        }
+
+        function renderTable(filterClass = "ALL", filterDiv = "ALL", searchQuery = "", selectedStudent = "") {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            let srNo = 1;
+
+            students.forEach((student) => {
+                if (filterClass !== "ALL" && student.std !== filterClass) return;
+                if (filterDiv !== "ALL" && student.div !== filterDiv) return;
+                if (selectedStudent && student.name !== selectedStudent) return;
+                if (searchQuery && !student.name.toLowerCase().includes(searchQuery.toLowerCase())) return;
+
+                if (!scores[student.name]) {
+                    scores[student.name] = { disc: 0, unif: 0, hin: 0, eng: 0, mar: 0, math: 0, sci: 0, dance: 0, ict: 0, lib: 0, ac: 0, ss: 0 };
+                }
+                if (!feedback[student.name]) {
+                    feedback[student.name] = {};
+                }
+
+                const s = scores[student.name];
+                const total = calculateTotal(student.name);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${srNo++}</td>
+                    <td class="student-name">${student.name}</td>
+                    <td>${student.std}</td>
+                    <td>Div ${student.div}</td>
+                    ${createScoreAndFeedbackCell(student.name, 'disc', Number(s.disc) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'unif', Number(s.unif) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'hin', Number(s.hin) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'eng', Number(s.eng) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'mar', Number(s.mar) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'math', Number(s.math) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'sci', Number(s.sci) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'dance', Number(s.dance) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'ict', Number(s.ict) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'lib', Number(s.lib) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'ac', Number(s.ac) || 0)}
+                    ${createScoreAndFeedbackCell(student.name, 'ss', Number(s.ss) || 0)}
+                    <td class="total-cell" id="total-${CSS.escape(student.name)}">${total}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function createScoreAndFeedbackCell(name, field, value) {
+            const isAllowed = !currentTeacher || currentTeacher.allowed.length === 0 || currentTeacher.allowed.includes(field);
+            const currentFb = (feedback[name] && feedback[name][field]) || "";
+            const safeId = name.replace(/[^a-zA-Z0-9]/g, '_');
+
+            if (isAllowed) {
+                return `
+                    <td>
+                        <div style="margin-bottom: 4px;">
+                            <button class="point-btn" onclick="updatePoint('${name.replace(/'/g, "\\'")}', '${field}', -1)">-</button>
+                            <span id="${field}-${safeId}">${value}</span>
+                            <button class="point-btn" onclick="updatePoint('${name.replace(/'/g, "\\'")}', '${field}', 1)">+</button>
+                        </div>
+                        <input type="text" class="feedback-input" id="fb-${safeId}-${field}" value="${currentFb}" placeholder="Remark..." onchange="updateCategoryFeedback('${name.replace(/'/g, "\\'")}', '${field}', this.value)">
+                    </td>
+                `;
+            } else {
+                return `
+                    <td>
+                        <div style="margin-bottom: 4px;">
+                            <button class="point-btn disabled" disabled>-</button>
+                            <span id="${field}-${safeId}" style="color: #94a3b8;">${value}</span>
+                            <button class="point-btn disabled" disabled>+</button>
+                        </div>
+                        <div style="font-size: 10px; color: #64748b; font-style: italic;">${currentFb || '-'}</div>
+                    </td>
+                `;
+            }
+        }
+
+        async function updatePoint(name, field, change) {
+            if (currentTeacher && currentTeacher.allowed.length > 0 && !currentTeacher.allowed.includes(field)) {
+                alert("Permission Denied: You cannot modify columns assigned to other teachers.");
+                return;
+            }
+
+            if (!scores[name]) scores[name] = {};
+            const currentVal = Number(scores[name][field]) || 0;
+            const newVal = currentVal + change;
+
+            if (newVal >= 0 && newVal <= 5) {
+                scores[name][field] = newVal;
+                const safeId = name.replace(/[^a-zA-Z0-9]/g, '_');
+                document.getElementById(`${field}-${safeId}`).innerText = newVal;
+                document.getElementById(`total-${CSS.escape(name)}`).innerText = calculateTotal(name);
+
+                await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "saveScores", scores: scores })
+                });
+            }
+        }
+
+        async function updateCategoryFeedback(name, field, value) {
+            if (!feedback[name]) feedback[name] = {};
+            feedback[name][field] = value;
+            await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "saveFeedback", feedback: feedback })
+            });
+        }
+
+        function filterData() {
+            const classVal = document.getElementById('classFilter').value;
+            const divVal = document.getElementById('divFilter').value;
+            const searchVal = document.getElementById('searchInput').value;
+            const studentVal = document.getElementById('studentDropdown').value;
+            renderTable(classVal, divVal, searchVal, studentVal);
+        }
+
+        async function saveData() {
+            await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "saveScores", scores: scores })
+            });
+            await fetch(API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "saveFeedback", feedback: feedback })
+            });
+            alert('Progress and category remarks successfully synced to Google Sheets!');
+        }
+
+        window.onload = function() {
+            // Wait for login
+        };
+    </script>
+</body>
+</html>
